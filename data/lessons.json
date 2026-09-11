@@ -1,0 +1,6 @@
+[
+  { "id": "f1", "courseSlug": "fiqh-ibadat", "title": "1 - أحكام الطهارة", "videoUrl": "", "duration": "18:20", "free": true },
+  { "id": "f2", "courseSlug": "fiqh-ibadat", "title": "2 - صفة الصلاة", "videoUrl": "", "duration": "22:10", "free": true },
+  { "id": "t1", "courseSlug": "tajweed-1", "title": "1 - مخارج الحروف", "videoUrl": "", "duration": "15:00", "free": true },
+  { "id": "p1", "courseSlug": "python-bootcamp", "title": "1 - تثبيت البيئة وأول برنامج", "videoUrl": "", "duration": "12:40", "free": true }
+]

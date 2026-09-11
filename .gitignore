@@ -1,0 +1,13 @@
+# أمان: لا ترفع الأسرار أبدا
+node_modules/
+.next/
+.env
+.env.local
+*.log
+tsconfig.tsbuildinfo
+next-env.d.ts
+# بيانات حساسة (تُنشأ تلقائيا عند أول دخول)
+data/users.json
+data/admissions.json
+
+

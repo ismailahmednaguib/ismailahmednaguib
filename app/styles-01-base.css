@@ -1,0 +1,8 @@
+/* styles-01-base : المتغيرات والأساس — عدّل الألوان من هنا فقط */
+:root{--g:#0b3d2e;--g2:#147052;--gold:#c9a227;--gold2:#f0d35e;--bg:#f7f5ee;--card:#fff;--tx:#1e2421;--mut:#6b766f;--br:#e6dfc9;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Cairo,Tahoma,sans-serif;background:var(--bg);color:var(--tx);line-height:1.8}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:auto;padding:0 14px}
+.mut{color:var(--mut);font-size:13.5px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}

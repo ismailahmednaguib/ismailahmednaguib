@@ -1,0 +1,7 @@
+/* styles-05-cert : الشهادات والطباعة فقط */
+.cert{border:3px double var(--gold);border-radius:16px;padding:28px 18px;text-align:center;background:#fffdf0;color:#222;max-width:700px;margin:16px auto}
+.cert h2{font-family:Amiri,serif;margin:0}
+.cert .cname{font-size:26px;font-weight:900;margin:10px 0}
+.qrcode{font-family:monospace;background:#111;color:#fff;display:inline-block;padding:6px 14px;border-radius:9px;letter-spacing:2px;margin-top:10px}
+.seal{width:74px;height:74px;border:3px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin:12px auto;font-size:28px;color:var(--g)}
+@media print{.cert{box-shadow:none;margin:0;max-width:100%}}

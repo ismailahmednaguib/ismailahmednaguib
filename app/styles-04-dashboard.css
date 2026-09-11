@@ -1,0 +1,12 @@
+/* styles-04-dashboard : لوحة التحكم فقط */
+.dash{display:grid;grid-template-columns:230px 1fr;gap:12px;margin:16px auto}
+.side{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:5px;height:fit-content;position:sticky;top:76px}
+.side h5{margin:8px 6px 2px;color:var(--mut);font-size:12px}
+.side button{text-align:start;background:none;border:0;padding:9px 11px;border-radius:9px;cursor:pointer;font-weight:700;color:var(--tx);font-family:inherit;font-size:14px}
+.side button.on,.side button:hover{background:var(--g);color:#fff}
+.panel{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:14px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin-bottom:11px}
+.kpi{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:12px;text-align:center}
+.kpi b{display:block;font-size:22px;color:var(--g)}
+@media(max-width:880px){.dash{grid-template-columns:1fr}.side{position:static;flex-direction:row;overflow:auto}}
+@media print{#siteHeader,#topbar,footer,.side,.noprint{display:none!important}}

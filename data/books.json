@@ -1,0 +1,6 @@
+[
+  { "slug": "arbaeen", "title": "الأربعون النووية شرح مبسط", "author": "الإمام النووي", "track": "academy", "pages": 120, "pdfUrl": "#", "desc": "متن حديثي مؤسس مع شرح ميسر." },
+  { "slug": "ajrumiyya", "title": "الآجرومية", "author": "ابن آجروم", "track": "academy", "pages": 60, "pdfUrl": "#", "desc": "متن النحو الأول للمبتدئين." },
+  { "slug": "tajweed-book", "title": "الملخص المفيد في التجويد", "author": "لجنة المدرسة القرآنية", "track": "quran", "pages": 90, "pdfUrl": "#", "desc": "أحكام التجويد بالصور والأمثلة." },
+  { "slug": "freelance-guide", "title": "دليل العمل الحر", "author": "المعهد التدريبي", "track": "institute", "pages": 80, "pdfUrl": "#", "desc": "من المهارة إلى أول عميل." }
+]

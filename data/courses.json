@@ -1,0 +1,7 @@
+[
+  { "slug": "fiqh-ibadat", "title": "فقه العبادات المصور", "track": "academy", "level": "مبتدئ", "teacher": "د. عبدالله الفقيه", "hours": 20, "price": 0, "desc": "الطهارة والصلاة والزكاة والصيام والحج بالدليل.", "videoUrl": "" },
+  { "slug": "nahw-1", "title": "النحو التطبيقي 1", "track": "academy", "level": "مبتدئ", "teacher": "أ. سعيد النحوي", "hours": 15, "price": 0, "desc": "تأسيس النحو من الصفر مع تطبيقات قرآنية.", "videoUrl": "" },
+  { "slug": "python-bootcamp", "title": "بايثون من الصفر لسوق العمل", "track": "institute", "level": "مبتدئ", "teacher": "م. أحمد التقني", "hours": 30, "price": 499, "desc": "برمجة عملية ومشاريع حقيقية.", "videoUrl": "" },
+  { "slug": "tajweed-1", "title": "التجويد المصور 1", "track": "quran", "level": "مبتدئ", "teacher": "الشيخ محمود الحصري", "hours": 12, "price": 0, "desc": "مخارج الحروف وأحكام النون الساكنة.", "videoUrl": "" },
+  { "slug": "islamic-studies-mini", "title": "الدراسات الإسلامية المصغرة", "track": "college", "level": "متوسط", "teacher": "د. ليلى حسن", "hours": 40, "price": 999, "desc": "مسار جامعي مصغر: عقيدة وفقه وسيرة ومنهج بحث.", "videoUrl": "" }
+]
