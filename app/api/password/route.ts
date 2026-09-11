@@ -1,10 +1,12 @@
-// app/api/password/route.ts : تغيير كلمة المرور فقط — للإدمن
+// app/api/password/route.ts : تغيير كلمة المرور — للإدمن (مع رسائل نجاح/خطأ للوحة)
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/db";
+import { db, type UserRow } from "../../../lib/db";
 import { checkPassword, hashPassword } from "../../../lib/security";
 import { currentUser } from "../../../lib/auth";
 
-interface UserRow { email: string; hash: string; role: string; }
+function back(req: Request, q: string) {
+  return NextResponse.redirect(new URL(`/dashboard${q}#security`, req.url));
+}
 
 export async function POST(req: Request) {
   const u = await currentUser();
@@ -15,14 +17,24 @@ export async function POST(req: Request) {
     : await req.json().catch(() => ({}));
   const old = String(raw["old"] || "");
   const nw = String(raw["nw"] || "");
-  if (nw.length < 10) return NextResponse.json({ error: "الجديدة قصيرة (10+)" }, { status: 400 });
-  const users = await db.read<UserRow[]>("users.json", []);
+  const nw2 = String(raw["nw2"] || "");
+
+  // تحقق
+  if (!old) return form ? back(req, "?pw=err&reason=no_old") : NextResponse.json({ error: "أدخل الحالية" }, { status: 400 });
+  if (nw.length < 10) return form ? back(req, "?pw=err&reason=short") : NextResponse.json({ error: "الجديدة قصيرة (10+)" }, { status: 400 });
+  if (nw2 && nw !== nw2) return form ? back(req, "?pw=err&reason=mismatch") : NextResponse.json({ error: "تأكيد الجديدة غير متطابق" }, { status: 400 });
+  if (nw === old) return form ? back(req, "?pw=err&reason=same") : NextResponse.json({ error: "الجديدة مثل الحالية" }, { status: 400 });
+
+  const users = await db.users();
   const i = users.findIndex((x) => x.email === u.email);
-  if (i < 0) return NextResponse.json({ error: "لا يوجد مستخدم" }, { status: 404 });
-  if (!(await checkPassword(old, users[i].hash))) return NextResponse.json({ error: "الحالية خطأ" }, { status: 401 });
+  if (i < 0) return form ? back(req, "?pw=err&reason=nouser") : NextResponse.json({ error: "لا يوجد مستخدم" }, { status: 404 });
+  if (!(await checkPassword(old, users[i].hash))) {
+    return form ? back(req, "?pw=err&reason=wrong") : NextResponse.json({ error: "الحالية خطأ" }, { status: 401 });
+  }
   users[i].hash = await hashPassword(nw);
   await db.write("users.json", users);
-  if (form) return NextResponse.redirect(new URL("/dashboard#security", req.url));
+  if (form) return back(req, "?pw=ok");
   return NextResponse.json({ ok: true });
 }
+
 

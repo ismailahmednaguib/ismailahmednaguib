@@ -10,7 +10,7 @@ import { FormCert, FormSecurity } from "./forms-3";
 
 export const dynamic = "force-dynamic";
 
-export default async function Dashboard() {
+export default async function Dashboard({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
   const u = await currentUser();
   if (!u) redirect("/login");
   if (u.role !== "admin") redirect("/login");
@@ -50,7 +50,7 @@ export default async function Dashboard() {
         <FormFatwa /><Tbl rows={fatwas} cols={["q", "scholar"]} />
         <FormCert /><Tbl rows={certs} cols={["code", "student", "course", "grade"]} />
         <Sec id="admiss" title="طلبات التقديم"><Tbl rows={admissions} cols={["name", "phone", "track", "course", "status"]} /></Sec>
-        <FormSecurity />
+        <FormSecurity searchParams={searchParams} />
       </div>
     </div>
   );

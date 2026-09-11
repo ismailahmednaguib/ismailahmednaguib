@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 import { checkPassword, cleanText, hashPassword, loginAllowed, loginFailed, loginOk, makeToken, SESSION_COOKIE } from "../../../lib/security";
+import { cookieOpts } from "../../../lib/cookies";
 import { clientIp } from "../../../lib/auth";
 
 const FIRST_ADMIN = { email: "admin@ian.local", pass: "IanAdmin123!" };
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
   const email = cleanText(String(body["email"] || "").toLowerCase(), 120);
   const password = String(body["password"] || "");
 
-  const users = await db.read<{ email: string; hash: string; role: string }[]>("users.json", []);
+  const users = await db.users();
   let admin = users.find((u) => u.email === email);
   if (!admin && email === FIRST_ADMIN.email) {
     admin = { email, hash: await hashPassword(FIRST_ADMIN.pass), role: "admin" };
@@ -35,12 +36,13 @@ export async function POST(req: Request) {
   const token = await makeToken({ email: admin.email, role: admin.role });
   if (isForm) {
     const res = NextResponse.redirect(new URL("/dashboard", req.url));
-    res.cookies.set(SESSION_COOKIE, token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 43200 });
+    res.cookies.set(SESSION_COOKIE, token, cookieOpts(req));
     return res;
   }
   const res = NextResponse.json({ ok: true });
-  res.cookies.set(SESSION_COOKIE, token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 43200 });
+  res.cookies.set(SESSION_COOKIE, token, cookieOpts(req));
   return res;
 }
+
 
 
