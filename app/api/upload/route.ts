@@ -23,31 +23,31 @@ export async function POST(req: Request) {
   if (file.type && !ALLOWED.has(file.type)) return NextResponse.json({ error: `نوع غير مدعوم: ${file.type}` }, { status: 400 });
   const buf = Buffer.from(await file.arrayBuffer());
 
-  // 1) R2 أولا — الأفضل للملفات الكبيرة
+  // 1) التخزين السحابي الأول — الأفضل للملفات الكبيرة
   if (isR2Configured()) {
     try {
       const { url, key } = await uploadToR2(buf, file.name || "upload", file.type || "application/octet-stream");
-      return NextResponse.json({ ok: true, url, key, via: "r2" });
+      return NextResponse.json({ ok: true, url, key, via: "cloud-files" });
     } catch (e) {
-      return NextResponse.json({ error: "فشل الرفع على R2: " + String((e as Error).message || e) }, { status: 500 });
+      return NextResponse.json({ error: "فشل الرفع السحابي: " + String((e as Error).message || e) }, { status: 500 });
     }
   }
 
-  // 2) Supabase Storage
+  // 2) التخزين السحابي البديل
   const sb = getSupabase();
-  if (!sb) return NextResponse.json({ error: "التخزين غير مربوط — أضف R2 أو Supabase في Vercel" }, { status: 400 });
+  if (!sb) return NextResponse.json({ error: "التخزين السحابي غير مربوط — اربطه من إعدادات الاستضافة" }, { status: 400 });
   const key = `ian/${Date.now()}-${(file.name || "upload").replace(/[^\w.\-]+/g, "_").slice(0, 100)}`;
   const { error: upErr } = await sb.storage.from(FILES_BUCKET).upload(key, buf, {
     contentType: file.type || "application/octet-stream",
     upsert: false,
   });
-  if (upErr) return NextResponse.json({ error: "فشل الرفع: " + upErr.message + " — تأكد من إنشاء باكت ian-files" }, { status: 500 });
+  if (upErr) return NextResponse.json({ error: "فشل الرفع: " + upErr.message + " — تأكد من إنشاء مساحة التخزين" }, { status: 500 });
   const { data: pub } = sb.storage.from(FILES_BUCKET).getPublicUrl(key);
   let url = pub?.publicUrl || "";
   if (!url) {
     const { data: signed } = await sb.storage.from(FILES_BUCKET).createSignedUrl(key, 31536000);
     url = signed?.signedUrl || "";
   }
-  return NextResponse.json({ ok: true, url, key, via: "supabase" });
+  return NextResponse.json({ ok: true, url, key, via: "cloud" });
 }
 

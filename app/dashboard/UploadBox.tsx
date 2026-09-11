@@ -1,4 +1,4 @@
-// app/dashboard/UploadBox.tsx : رفع ملف من اللوحة — يرفع على R2 ثم Supabase تلقائيا
+// app/dashboard/UploadBox.tsx : رفع ملف من اللوحة — يرفع على التخزين السحابي تلقائيا
 "use client";
 import { useState } from "react";
 
@@ -26,7 +26,7 @@ export default function UploadBox({ targetName, label }: { targetName: string; l
         input.value = j.url;
         input.focus();
       }
-      setMsg(`تم الرفع عبر ${j.via === "r2" ? "Cloudflare R2" : "Supabase"} — انسخ الرابط: ${j.url || j.key}`);
+      setMsg(`تم الرفع بنجاح ✓ — انسخ الرابط: ${j.url || j.key}`);
     } catch (err) {
       setMsg("خطأ شبكة أثناء الرفع");
     } finally {
@@ -37,7 +37,7 @@ export default function UploadBox({ targetName, label }: { targetName: string; l
   return (
     <div className="panel" style={{ background: "var(--bg)" }}>
       <b>{label}</b>
-      <p className="mut">اختر PDF أو صورة (حتى 100MB) — سيرفع على R2 أولا ثم Supabase، والرابط سيوضع في الحقل تلقائيا.</p>
+      <p className="mut">اختر PDF أو صورة (حتى 100MB) — سيرفع على التخزين السحابي، والرابط سيوضع في الحقل تلقائيا.</p>
       <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.mp3,.mp4" onChange={onFile} disabled={busy} />
       {msg && <p className="mut" style={{ wordBreak: "break-all" }}>{msg}</p>}
     </div>

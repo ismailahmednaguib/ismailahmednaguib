@@ -1,6 +1,6 @@
-// app/components-Header.tsx : الهيدر والقائمة فقط — عدّل الروابط من هنا
+// app/components-Header.tsx : الهيدر والقائمة فقط — الاسم يأتي من الإعدادات
 import Link from "next/link";
-import { SITE } from "../lib/site";
+import NavBurger from "./NavBurger";
 
 const LINKS = [
   { href: "/", label: "الرئيسية" },
@@ -15,13 +15,14 @@ const LINKS = [
   { href: "/dashboard", label: "لوحة التحكم" },
 ];
 
-export default function Header() {
+export default function Header({ siteName, tagline }: { siteName: string; tagline: string }) {
   return (
     <header id="siteHeader">
       <div className="head-in">
+        <NavBurger />
         <Link href="/" className="brand">
           <span className="logo">◈</span>
-          <span><b>{SITE.name}</b><small>{SITE.tagline}</small></span>
+          <span><b>{siteName}</b><small>{tagline}</small></span>
         </Link>
         <nav id="mainNav">
           {LINKS.map((l) => (<Link key={l.href} href={l.href}>{l.label}</Link>))}
@@ -33,3 +34,4 @@ export default function Header() {
     </header>
   );
 }
+

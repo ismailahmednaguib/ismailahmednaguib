@@ -4,6 +4,7 @@ import os from "os";
 import path from "path";
 import { getSupabase, fileKey, STORE_TABLE } from "./supabase";
 import { readMapped, toRows, TABLE_OF, deleteTableRow } from "./db-tables";
+import { readSettingsRow, writeSettingsRow } from "./db-settings";
 import type { Course, Book, Lesson, Scholar, NewsItem, Fatwa, Certificate, Admission } from "./types";
 
 const DATA = path.join(process.cwd(), "data");
@@ -32,6 +33,10 @@ async function read<T>(file: string, fallback: T): Promise<T> {
   const sb = getSupabase();
   if (sb) {
     try {
+      if (file === "settings.json") {
+        const row = await readSettingsRow();
+        if (row) return row as unknown as T;
+      }
       const mapped = await readMapped<T>(file);
       if (mapped) return mapped;
       if (file === "users.json") {
@@ -52,6 +57,10 @@ async function write(file: string, value: unknown) {
   const sb = getSupabase();
   if (sb) {
     try {
+      if (file === "settings.json") {
+        const ok = await writeSettingsRow((value || {}) as Record<string, unknown>);
+        if (ok) return;
+      }
       const arr = value as Record<string, unknown>[];
       if (file === "users.json" && Array.isArray(arr)) {
         if (!arr.length) return;
@@ -97,7 +106,7 @@ export const db = {
   certs: () => read<Certificate[]>("certificates.json", []),
   admissions: () => read<Admission[]>("admissions.json", []),
   users: () => read<UserRow[]>("users.json", []),
-  settings: () => read<{ announce?: string; whatsapp?: string }>("settings.json", {}),
+  settings: () => read<Record<string, unknown>>("settings.json", {}),
   storageMode: () => (useSupabase() ? "supabase" : "local"),
 };
 

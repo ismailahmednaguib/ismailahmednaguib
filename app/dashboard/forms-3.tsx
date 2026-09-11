@@ -60,7 +60,7 @@ export function FormSecurity({ searchParams }: { searchParams?: { [key: string]:
         <input name="password" type="password" placeholder="الحالية" required dir="ltr" autoComplete="current-password" />
         <button className="btn gold" type="submit">تغيير البريد</button>
       </form>
-      <p className="mut">ملاحظة: على الاستضافة المجانية قد تعود البيانات القديمة بعد إعادة النشر — للحفظ الدائم سننقل التخزين لقاعدة سحابية.</p>
+      <p className="mut">بيانات الدخول محفوظة بشكل دائم وآمن. احتفظ بكلمة مرور قوية ولا تشاركها.</p>
     </Sec>
   );
 }

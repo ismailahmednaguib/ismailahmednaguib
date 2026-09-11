@@ -1,11 +1,10 @@
 // app/api/login/route.ts : الدخول فقط — ضد التخمين + توكن آمن
+// ملاحظة أمان: لا يوجد أي حساب افتراضي هنا. الأدمن ينشأ فقط عبر supabase/set-admin.sql
 import { NextResponse } from "next/server";
 import { db } from "../../../lib/db";
-import { checkPassword, cleanText, hashPassword, loginAllowed, loginFailed, loginOk, makeToken, SESSION_COOKIE } from "../../../lib/security";
+import { checkPassword, cleanText, loginAllowed, loginFailed, loginOk, makeToken, SESSION_COOKIE } from "../../../lib/security";
 import { cookieOpts } from "../../../lib/cookies";
 import { clientIp } from "../../../lib/auth";
-
-const FIRST_ADMIN = { email: "admin@ian.local", pass: "IanAdmin123!" };
 
 export async function POST(req: Request) {
   const ip = clientIp();
@@ -21,12 +20,7 @@ export async function POST(req: Request) {
   const password = String(body["password"] || "");
 
   const users = await db.users();
-  let admin = users.find((u) => u.email === email);
-  if (!admin && email === FIRST_ADMIN.email) {
-    admin = { email, hash: await hashPassword(FIRST_ADMIN.pass), role: "admin" };
-    users.push(admin);
-    await db.write("users.json", users);
-  }
+  const admin = users.find((u) => u.email === email);
   if (!admin || !(await checkPassword(password, admin.hash))) {
     loginFailed(ip);
     if (isForm) return NextResponse.redirect(new URL("/login?err=1", req.url));

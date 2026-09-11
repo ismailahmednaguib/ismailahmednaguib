@@ -17,7 +17,7 @@ export default async function Verify({ searchParams }: SearchProps) {
   }
   return (<><section className="page-head wrap"><h1>التحقق من الشهادة</h1><p>أدخل كود الشهادة للتأكد من صحتها</p></section>
   <section className="wrap sec"><form className="frm" method="GET" action="/verify">
-  <label>كود الشهادة (مثال: IAN-2026-0001)</label><input name="code" defaultValue={code} placeholder="IAN-2026-0001" />
+  <label>كود الشهادة الموجود على شهادتك</label><input name="code" defaultValue={code} placeholder="مثال: IAN-2026-1234" />
   <button className="btn gold" type="submit">تحقق</button></form>
   {code && (cert ? (<div className="cert"><h2>شهادة موثقة ✓</h2><div className="cname">{cert.student}</div>
   <p>أتم بنجاح: <b>{cert.course}</b><br />التقدير: {cert.grade} • التاريخ: {cert.date}</p>

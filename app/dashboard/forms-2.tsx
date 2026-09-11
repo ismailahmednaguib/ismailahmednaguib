@@ -1,4 +1,4 @@
-// app/dashboard/forms-2.tsx : نماذج الكتب (رفع R2/Supabase) والعلماء والأخبار والفتاوى
+// app/dashboard/forms-2.tsx : نماذج الكتب (رفع سحابي) والعلماء والأخبار والفتاوى
 import { Sec } from "./ui";
 import UploadBox from "./UploadBox";
 export function FormBook() {
@@ -14,7 +14,7 @@ export function FormBook() {
         <textarea name="desc" placeholder="وصف" />
         <button className="btn gold" type="submit">إضافة الكتاب</button>
       </form>
-      <p className="mut">الرفع: R2 أولا (10GB + باندويث بلا حدود) ثم Supabase — أو الصق رابط Google Drive يدويا.</p>
+      <p className="mut">الرفع مباشر من اللوحة للتخزين السحابي — أو الصق رابطا يدويا.</p>
     </Sec>
   );
 }
