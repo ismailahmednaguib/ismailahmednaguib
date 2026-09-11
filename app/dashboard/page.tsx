@@ -14,6 +14,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
   const u = await currentUser();
   if (!u) redirect("/login");
   if (u.role !== "admin") redirect("/login");
+  const mode = db.storageMode();
   const courses: DashboardRow[] = (await db.courses()).map((x) => ({ ...x, __t: "courses" }));
   const lessons: DashboardRow[] = (await db.lessons()).map((x) => ({ ...x, __t: "lessons" }));
   const books: DashboardRow[] = (await db.books()).map((x) => ({ ...x, __t: "books" }));
@@ -35,6 +36,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
       </aside>
       <div>
         <section className="panel"><h2 style={{ margin: 0 }}>لوحة تحكم {u.email}</h2>
+          <p className="mut">التخزين الحالي: {mode === "supabase" ? "☁️ Supabase سحابي دائم ✓" : "💾 ملفات محلية (مؤقتة على الاستضافة)"}</p>
           <div className="kpis">
             <div className="kpi"><b>{courses.length}</b><span>دورة</span></div>
             <div className="kpi"><b>{lessons.length}</b><span>درس</span></div>

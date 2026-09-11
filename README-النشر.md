@@ -1,41 +1,59 @@
-# منصة إسماعيل أحمد نجيب — دليل الرفع والنشر المجاني
+# منصة إسماعيل أحمد نجيب — دليل الرفع والنشر والتخزين الكامل
 
-## 1) أفضل منصة رفع الكود (مجانا وتستحمل)
-- **GitHub (مجاني)**: ارفع عليه المشروع — مساحة غير محدودة للمشاريع العامة.
-- الأوامر:
-  ```
-  git init -b main
-  git add .
-  git commit -m "منصة إسماعيل أحمد نجيب v1"
-  git remote add origin https://github.com/اسمك/ismail-ahmed-naguib.git
-  git push -u origin main
-  ```
+## 1) رفع الكود على GitHub
+```
+git add .
+git commit -m "المنظومة الكاملة: Supabase + R2 + YouTube"
+git push origin main
+```
 
-## 2) أفضل منصة نشر الموقع (مجانا وتستحمل)
-- **Vercel Hobby (الأفضل لمشروعك Next.js)**:
-  - باندويث ~100GB شهريا + بناء تلقائي من GitHub + HTTPS مجاني + حماية DDoS.
-  - يستحمل آلاف الزيارات يوميا للصفحات. مناسب جدا كبداية عالمية مجانية.
-  - الخطوات: حساب Vercel ← Import من GitHub ← أضف JWT_SECRET في Environment Variables ← Deploy.
-- **بديل unlimited bandwidth**: Cloudflare Pages (باندويث غير محدود) لكنه للمواقع الثابتة — لوحتك تحتاج سيرفر، لذلك Vercel أفضل الآن.
+## 2) نشر الموقع على Vercel (يبني تلقائيا من GitHub)
+1. Vercel ← Add New → Project ← Import مستودع `ismailahmednaguib`
+2. في **Environment Variables** أضف:
+   - `JWT_SECRET` = مفتاحك الطويل (نفس الموجود في `.env.local` عندك)
+   - `SUPABASE_URL` = رابط مشروعك (من Supabase → Project Settings → API)
+   - `SUPABASE_SERVICE_ROLE_KEY` = مفتاح service_role (سري جدا — للسيرفر فقط)
+   - (اختياري للملفات الكبيرة) `R2_ENDPOINT` + `R2_ACCESS_KEY_ID` + `R2_SECRET_ACCESS_KEY` + `R2_BUCKET` + `R2_PUBLIC_URL`
+3. **Deploy** — اللوحة ستعرض "☁️ Supabase سحابي دائم ✓" عندما يعمل الربط.
 
-## 3) أفضل منصة للفيديوهات (مجانا وتستحمل ملايين)
-- **YouTube (غير مدرج Unlisted)**: مساحة ومشاهدات غير محدودة مجانا + مشغل سريع عالميا.
-- ارفع الفيديو ← غير مدرج ← الصق الرابط في لوحة التحكم ← قسم الدروس.
-- بديل للملفات الخاصة: **Cloudflare R2** (10GB تخزين + 10M طلب مجانا شهريا + صفر رسوم خروج).
+## 3) تجهيز Supabase (مرة واحدة — 5 دقائق)
+1. افتح مشروعك على supabase.com ← **SQL Editor** ← الصق محتوى `supabase/schema.sql` ← **Run**
+   (ينشئ جدول `ian_store` + يفعل RLS مقفولا على العامة — الكتابة عبر SERVICE_ROLE فقط)
+2. **Storage** ← New bucket ← الاسم `ian-files` ← خليه **Private**
+3. انقل بياناتك الحالية مرة واحدة من جهازك:
+```
+$env:SUPABASE_URL='رابطك'; $env:SUPABASE_SERVICE_ROLE_KEY='مفتاحك'; node scripts/migrate-to-supabase.mjs
+```
+4. ادخل `/login` مرة واحدة (ينشئ حساب الأدمن في Supabase) ثم غيّر الباسورد من اللوحة ← الأمان.
 
-## 4) أفضل منصة للكتب PDF (مجانا وتستحمل أحجام)
-- **Cloudflare R2**: 10GB مجانا ويستحمل التحميلات الكبيرة بدون فواتير مفاجئة.
-- بديل سريع: Google Drive (15GB مجانا) والصق رابط المشاركة في لوحة التحكم.
+## 4) تجهيز Cloudflare R2 للملفات الكبيرة (اختياري — 5 دقائق)
+1. Cloudflare Dashboard ← **R2** ← Create bucket (مثال `ian-files`)
+2. R2 ← **Manage R2 API tokens** ← Create API token ← صلاحية Object Read & Write ← انسخ:
+   `R2_ENDPOINT` = `https://<account-id>.r2.cloudflarestorage.com`
+   `R2_ACCESS_KEY_ID` + `R2_SECRET_ACCESS_KEY` + `R2_BUCKET`
+3. للروابط العامة: Bucket ← Settings ← Public access ← فعّل (يعطيك `https://pub-xxxx.r2.dev`) ← ضعه في `R2_PUBLIC_URL`
+   أو اربط دومين مخصص `files.موقعك.com`
+4. ضع المتغيرات الخمسة في Vercel ← Redeploy — الرفع من اللوحة سيذهب لـ R2 تلقائيا.
 
-## 5) التشغيل محليا
+## 5) الفيديوهات على يوتيوب (مجاني بلا حدود)
+- ارفع الفيديو ← **غير مدرج Unlisted** ← الصق الرابط في اللوحة ← قسم الدروس/الدورات.
+- يدعم: عادي + shorts + live + embed — والمشغل يظهر تلقائيا في صفحة الدورة.
+
+## 6) التشغيل محليا
 ```
 npm install
 copy .env.example .env.local
-# ولّد JWT_SECRET طويل وضعه في .env.local
+# املأ JWT_SECRET (والمتغيرات السحابية لو تريد تجربة Supabase محليا)
 npm run dev
 ```
-- الدخول: http://localhost:3000/login — أول دخول: admin@ian.local / IanAdmin123! ثم غيّرها فورا من لوحة التحكم ← الأمان.
+- الدخول: http://localhost:3000/login — أول دخول: admin@ian.local / IanAdmin123!
 
-## 6) ملاحظة أمان مهمة
-- ملف data/users.json وJWT_SECRET لا يُرفعان على GitHub أبدا (محميان في .gitignore).
-- الكتابة في data/*.json على Vercel مؤقتة (تُمسح مع كل نشر) — مناسبة للتجربة؛ وعندما تكبر المنصة ننقل التخزين إلى Supabase/Neon (مجاني حتى 500MB) بدون تغيير الصفحات.
+## 7) كيف تعمل المنظومة؟
+- **البيانات** (يوزرات/دورات/شهادات/تقديمات): Supabase جدول `ian_store` عند وجود المتغيرات، وإلا ملفات `data/*.json` محليا.
+- **الملفات** (PDF/صور حتى 100MB): R2 أولا، ثم Supabase Storage، من زر الرفع في قسم الكتب.
+- **الفيديو**: روابط يوتيوب فقط — لا نستهلك مساحة الاستضافة.
+- **الأمان**: SERVICE_ROLE ومفاتيح R2 في السيرفر فقط — لا تظهر للمتصفح أبدا. RLS مقفول على العامة.
+
+## 8) ملاحظة أمان مهمة
+- `data/users.json` و `data/admissions.json` و `.env.local` في `.gitignore` — لا ترفعهم أبدا.
+

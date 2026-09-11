@@ -1,18 +1,20 @@
-// app/dashboard/forms-2.tsx : نماذج الكتب والعلماء والأخبار والفتاوى فقط
+// app/dashboard/forms-2.tsx : نماذج الكتب (رفع R2/Supabase) والعلماء والأخبار والفتاوى
 import { Sec } from "./ui";
+import UploadBox from "./UploadBox";
 export function FormBook() {
   return (
-    <Sec id="books" title="الكتب — روابط PDF">
-      <p className="mut">ارفع الـ PDF على Cloudflare R2 أو Google Drive والصق الرابط هنا.</p>
+    <Sec id="books" title="الكتب — رفع PDF مباشرة">
+      <UploadBox targetName="pdfUrl" label="📤 ارفع ملف الكتاب (PDF حتى 100MB)" />
       <form className="frm" method="POST" action="/api/admin/books">
         <div className="row"><input name="slug" placeholder="slug الكتاب" required />
         <select name="track"><option value="academy">academy</option><option value="institute">institute</option><option value="quran">quran</option><option value="college">college</option></select></div>
         <input name="title" placeholder="اسم الكتاب" required />
         <div className="row"><input name="author" placeholder="المؤلف" /><input name="pages" placeholder="الصفحات" type="number" /></div>
-        <input name="pdfUrl" placeholder="رابط PDF https://..." dir="ltr" />
+        <input name="pdfUrl" placeholder="رابط PDF — ارفع بالأعلى وسيوضع هنا تلقائيا أو الصق رابطا" dir="ltr" />
         <textarea name="desc" placeholder="وصف" />
         <button className="btn gold" type="submit">إضافة الكتاب</button>
       </form>
+      <p className="mut">الرفع: R2 أولا (10GB + باندويث بلا حدود) ثم Supabase — أو الصق رابط Google Drive يدويا.</p>
     </Sec>
   );
 }
