@@ -64,6 +64,8 @@ export async function DELETE(req: Request, { params }: { params: { table: string
   const file = FILES[params.table];
   if (!file) return NextResponse.json({ error: "جدول غير معروف" }, { status: 400 });
   const id = new URL(req.url).searchParams.get("id") || "";
+  // حذف مباشر من الجداول العدلة أولا (Supabase) ثم تحديث النسخ الاحتياطية
+  if (await db.deleteFrom(file, id)) return NextResponse.json({ ok: true });
   const all = await db.read<Record<string, unknown>[]>(file, []);
   const kept = all.filter((x) => String(x["id"] || x["slug"] || x["code"]) !== id);
   await db.write(file, kept);
