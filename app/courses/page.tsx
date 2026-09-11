@@ -3,6 +3,8 @@ import { db } from "../../lib/db";
 import { CourseCard } from "../components-Cards";
 import { TRACKS } from "../../lib/site";
 
+export const dynamic = "force-dynamic";
+
 export default async function Courses({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
   const all = await db.courses();
   const t = typeof searchParams?.track === "string" ? searchParams.track : undefined;
