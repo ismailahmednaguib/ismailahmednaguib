@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   const oldEmail = users[i].email;
   users[i].email = newEmail;
   await db.write("users.json", users);
-  await logEmailChange(oldEmail, newEmail, u.email, u.role, clientIp(req));
+  await logEmailChange(oldEmail, newEmail, u.email, u.role, clientIp());
   const token = await makeToken({ email: newEmail, role: users[i].role });
   if (form) {
     const res = back(req, "?em=ok");

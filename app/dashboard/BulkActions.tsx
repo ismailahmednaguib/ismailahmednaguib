@@ -32,7 +32,7 @@ export default function BulkActions({ table, rows, onComplete }: Props) {
     
     setBusy(true);
     try {
-      for (const id of selected) {
+      for (const id of Array.from(selected)) {
         if (action === "delete") {
           await fetch(`/api/admin/${table}?id=${encodeURIComponent(id)}`, { method: "DELETE" });
         } else {

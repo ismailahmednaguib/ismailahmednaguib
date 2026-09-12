@@ -1,5 +1,5 @@
 // app/not-found.tsx : صفحة 404 مخصصة
-import { getSiteSettings } from "./lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings";
 import Link from "next/link";
 
 export default async function NotFound() {

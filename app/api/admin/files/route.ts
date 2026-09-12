@@ -1,8 +1,8 @@
 // app/api/admin/files/route.ts : قائمة الملفات المرفقة + حذف من التخزين السحابي
 import { NextResponse } from "next/server";
-import { getSupabase, FILES_BUCKET } from "../../../lib/supabase";
-import { isR2Configured, listR2, deleteR2 } from "../../../lib/r2";
-import { currentUser } from "../../../lib/auth";
+import { getSupabase, FILES_BUCKET } from "@/lib/supabase";
+import { isR2Configured, listR2, deleteR2 } from "@/lib/r2";
+import { currentUser } from "@/lib/auth";
 
 export async function GET() {
   const u = await currentUser();

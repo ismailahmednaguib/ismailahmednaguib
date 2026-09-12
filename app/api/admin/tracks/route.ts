@@ -1,22 +1,25 @@
 // app/api/admin/tracks/route.ts : إضافة/تعديل/حذف المسارات من اللوحة
 import { NextResponse } from "next/server";
-import { SITE } from "../../../lib/site";
-import { db } from "../../../lib/db";
-import { cleanText } from "../../../lib/security";
-import { currentUser, clientIp } from "../../../lib/auth";
-import { logAdd, logEdit, logDelete } from "../../../lib/activity";
+import { TRACKS } from "@/lib/site";
+import { db } from "@/lib/db";
+import { cleanText } from "@/lib/security";
+import { currentUser, clientIp } from "@/lib/auth";
+import { logAdd, logEdit, logDelete } from "@/lib/activity";
 
 export async function GET() {
   const u = await currentUser();
   if (!u || u.role !== "admin") return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
-  const s = await db.settings().catch(() => ({}));
-  const out = SITE.TRACKS.map((t) => {
-    const ti = typeof s[`track_${t.slug}_title`] === "string" && String(s[`track_${t.slug}_title`]).trim()
-      ? String(s[`track_${t.slug}_title`]) : t.title;
-    const de = typeof s[`track_${t.slug}_desc`] === "string" && String(s[`track_${t.slug}_desc`]).trim()
-      ? String(s[`track_${t.slug}_desc`]) : t.desc;
-    const ic = typeof s[`track_${t.slug}_icon`] === "string" && String(s[`track_${t.slug}_icon`]).trim()
-      ? String(s[`track_${t.slug}_icon`]) : t.icon;
+  const s = (await db.settings().catch(() => ({}))) as Record<string, string>;
+  const out = TRACKS.map((t) => {
+    const titleKey = `track_${t.slug}_title`;
+    const descKey = `track_${t.slug}_desc`;
+    const iconKey = `track_${t.slug}_icon`;
+    const ti = typeof s[titleKey] === "string" && s[titleKey].trim()
+      ? s[titleKey] : t.title;
+    const de = typeof s[descKey] === "string" && s[descKey].trim()
+      ? s[descKey] : t.desc;
+    const ic = typeof s[iconKey] === "string" && s[iconKey].trim()
+      ? s[iconKey] : t.icon;
     return { slug: t.slug, title: ti, desc: de, icon: ic };
   });
   return NextResponse.json({ ok: true, tracks: out });
@@ -37,7 +40,7 @@ export async function POST(req: Request) {
   next[`track_${slug}_desc`] = desc;
   next[`track_${slug}_icon`] = icon;
   await db.write("settings.json", next);
-  await logAdd("tracks", slug, `مسار جديد: ${title} (${slug})`, u.email, u.role, clientIp(req));
+  await logAdd("tracks", slug, `مسار جديد: ${title} (${slug})`, u.email, u.role, clientIp());
   return NextResponse.json({ ok: true, track: { slug, title, desc, icon } });
 }
 
@@ -63,7 +66,7 @@ export async function PUT(req: Request) {
   next[`track_${target}_desc`] = desc;
   next[`track_${target}_icon`] = icon;
   await db.write("settings.json", next);
-  await logEdit("tracks", target, `مسار: ${title} (${target})`, u.email, u.role, `تعديل المسار`, clientIp(req));
+  await logEdit("tracks", target, `مسار: ${title} (${target})`, u.email, u.role, `تعديل المسار`, clientIp());
   return NextResponse.json({ ok: true, track: { slug: target, title, desc, icon } });
 }
 
@@ -81,6 +84,6 @@ export async function DELETE(req: Request) {
   delete next[`track_${slug}_desc`];
   delete next[`track_${slug}_icon`];
   await db.write("settings.json", next);
-  await logDelete("tracks", slug, `مسار: ${slug}`, u.email, u.role, clientIp(req));
+  await logDelete("tracks", slug, `مسار: ${slug}`, u.email, u.role, clientIp());
   return NextResponse.json({ ok: true });
 }

@@ -64,7 +64,7 @@ export async function POST(req: Request, { params }: { params: { table: string }
   const all = await db.read<Record<string, unknown>[]>(file, []);
   all.push(item);
   await db.write(file, all);
-  await logAdd(params.table, String(item.id || item.slug || item.code), getTitle(item, params.table), u.email, u.role, clientIp(req));
+  await logAdd(params.table, String(item.id || item.slug || item.code), getTitle(item, params.table), u.email, u.role, clientIp());
   
   // إرسال بريد للشهادة
   if (params.table === "certificates" && item["code"]) {
@@ -102,12 +102,12 @@ export async function DELETE(req: Request, { params }: { params: { table: string
   const existing = all.find((x) => String(x["id"] || x["slug"] || x["code"]) === id);
   const title = existing ? getTitle(existing, params.table) : id;
   if (await db.deleteFrom(file, id)) {
-    await logDelete(params.table, id, title, u.email, u.role, clientIp(req));
+    await logDelete(params.table, id, title, u.email, u.role, clientIp());
     return NextResponse.json({ ok: true });
   }
   const kept = all.filter((x) => String(x["id"] || x["slug"] || x["code"]) !== id);
   await db.write(file, kept);
-  await logDelete(params.table, id, title, u.email, u.role, clientIp(req));
+  await logDelete(params.table, id, title, u.email, u.role, clientIp());
   return NextResponse.json({ ok: true });
 }
 
@@ -125,7 +125,7 @@ export async function PUT(req: Request, { params }: { params: { table: string } 
     const oldTitle = getTitle(all[i], params.table);
     all[i] = { ...all[i], ...item };
     await db.write(file, all);
-    await logEdit(params.table, key, getTitle(item, params.table), u.email, u.role, `تم تعديل: ${oldTitle}`, clientIp(req));
+    await logEdit(params.table, key, getTitle(item, params.table), u.email, u.role, `تم تعديل: ${oldTitle}`, clientIp());
   }
   return NextResponse.json({ ok: true });
 }

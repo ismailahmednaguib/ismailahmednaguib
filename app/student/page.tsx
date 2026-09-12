@@ -8,6 +8,15 @@ import StudentDashboard from "./StudentDashboard";
 
 export const dynamic = "force-dynamic";
 
+import type { Course, Lesson } from "@/lib/types";
+import type { Enrollment } from "@/lib/enrollment";
+
+interface MyCourse {
+  enrollment: Enrollment;
+  course: Course;
+  lessons: Lesson[];
+}
+
 export default async function StudentPortal() {
   const u = await currentUser();
   if (!u) redirect("/login");
@@ -18,11 +27,13 @@ export default async function StudentPortal() {
   const courses = await db.courses();
   const lessons = await db.lessons();
   
-  const myCourses = enrollments.map(e => {
-    const course = courses.find(c => c.slug === e.courseSlug);
-    const courseLessons = lessons.filter(l => l.courseSlug === e.courseSlug);
-    return { enrollment: e, course, lessons: courseLessons };
-  }).filter(x => x.course);
+  const myCourses: MyCourse[] = enrollments
+    .map(e => {
+      const course = courses.find(c => c.slug === e.courseSlug);
+      const courseLessons = lessons.filter(l => l.courseSlug === e.courseSlug);
+      return { enrollment: e, course, lessons: courseLessons };
+    })
+    .filter((x): x is MyCourse => x.course !== undefined);
   
   return <StudentDashboard user={u} myCourses={myCourses} settings={s} />;
 }

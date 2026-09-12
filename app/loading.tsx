@@ -1,4 +1,5 @@
 // app/loading.tsx : حالة التحميل العامة
+"use client";
 export default function Loading() {
   return (
     <div style={{ 

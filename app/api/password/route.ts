@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   }
   users[i].hash = await hashPassword(nw);
   await db.write("users.json", users);
-  await logPasswordChange(u.email, u.role, clientIp(req));
+  await logPasswordChange(u.email, u.role, clientIp());
   if (form) return back(req, "?pw=ok");
   return NextResponse.json({ ok: true });
 }

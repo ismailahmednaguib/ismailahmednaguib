@@ -1,5 +1,5 @@
 // app/search/page.tsx : صفحة البحث الكاملة
-import { getSiteSettings } from "../lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings";
 import SearchBox from "../components-Search";
 
 export const dynamic = "force-dynamic";

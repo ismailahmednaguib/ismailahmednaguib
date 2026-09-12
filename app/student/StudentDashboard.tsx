@@ -2,8 +2,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { youtubeThumb, youtubeEmbed } from "../lib/youtube";
-import type { Course, Lesson, Enrollment } from "../lib/types";
+import { youtubeThumb, youtubeEmbed } from "@/lib/youtube";
+import type { Course, Lesson } from "@/lib/types";
+import type { Enrollment } from "@/lib/enrollment";
 
 interface MyCourse {
   enrollment: Enrollment;
@@ -25,7 +26,7 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
   const [activeCourse, setActiveCourse] = useState<MyCourse | null>(null);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
 
-  const totalProgress = myCourses.length 
+  const totalProgress = myCourses.length
     ? Math.round(myCourses.reduce((sum, m) => sum + m.enrollment.progress, 0) / myCourses.length)
     : 0;
   const completedCourses = myCourses.filter(m => m.enrollment.progress === 100).length;
@@ -45,7 +46,7 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
             📊 نظرة عامة
           </button>
           {myCourses.map(m => (
-            <button key={m.enrollment.id} className={activeCourse?.enrollment.id === m.enrollment.id ? "active" : ""} 
+            <button key={m.enrollment.id} className={activeCourse?.enrollment.id === m.enrollment.id ? "active" : ""}
               onClick={() => { setActiveCourse(m); setActiveLesson(null); }}>
               🎓 {m.course.title}
               <span className="progress-badge">{m.enrollment.progress}%</span>
@@ -66,7 +67,7 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
           <section className="panel">
             <h2 style={{ marginTop: 0 }}>مرحباً بك، {user.email.split("@")[0]} 👋</h2>
             <p className="mut">من هنا تتابع تقدمك في الدورات، تشاهد الدروس، وتصدر شهاداتك عند الإكمال.</p>
-            
+
             <div className="kpis" style={{ marginTop: 16 }}>
               <div className="kpi"><b>{myCourses.length}</b><span>دورات مسجلة</span></div>
               <div className="kpi"><b>{completedCourses}</b><span>دورات مكتملة</span></div>
@@ -77,7 +78,7 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
               <div className="grid" style={{ marginTop: 20 }}>
                 {myCourses.map(m => (
                   <div className="card" key={m.enrollment.id} onClick={() => setActiveCourse(m)} style={{ cursor: "pointer" }}>
-                    <div className="thumb">{m.course.videoUrl ? <img src={youtubeThumb(m.course.videoUrl)} alt={m.course.title} loading="lazy" /> : "🎓"}</div>
+                    <div className="thumb">{m.course.videoUrl ? <img src={youtubeThumb(m.course.videoUrl!) || ""} alt={m.course.title} loading="lazy" /> : "🎓"}</div>
                     <div className="pad">
                       <span className="badge">{m.course.track} • {m.course.level}</span>
                       <b>{m.course.title}</b>
@@ -89,7 +90,7 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
                         <small className="mut">{m.enrollment.progress}% مكتمل • {m.enrollment.completedLessons.length} درس منتهٍ</small>
                       </div>
                       {m.enrollment.certificateIssued && (
-                        <Link className="btn sm gold" style={{ marginTop: 8, display: "inline-block" }} 
+                        <Link className="btn sm gold" style={{ marginTop: 8, display: "inline-block" }}
                           href={`/verify?code=${m.enrollment.certificateCode}`} target="_blank" rel="noreferrer">
                           📜 عرض الشهادة
                         </Link>
@@ -119,7 +120,7 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
                 </div>
                 <b>{activeCourse.enrollment.progress}% مكتمل</b>
                 {activeCourse.enrollment.certificateIssued && (
-                  <Link className="btn sm gold" style={{ marginTop: 8, display: "inline-block" }} 
+                  <Link className="btn sm gold" style={{ marginTop: 8, display: "inline-block" }}
                     href={`/verify?code=${activeCourse.enrollment.certificateCode}`} target="_blank" rel="noreferrer">
                     📜 شهادتك
                   </Link>
@@ -140,10 +141,10 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
                 const isFree = lesson.free;
                 const canWatch = isFree || isCompleted || activeCourse.enrollment.progress > 0;
                 const videoUrl = lesson.videoUrl;
-                const emb = videoUrl ? youtubeEmbed(videoUrl) : null;
-                
+                const lessonEmb = videoUrl ? youtubeEmbed(videoUrl) : null;
+
                 return (
-                  <div className="lesson" key={lesson.id} style={{ 
+                  <div className="lesson" key={lesson.id} style={{
                     opacity: canWatch ? 1 : 0.6,
                     borderColor: isCompleted ? "var(--g2)" : "var(--br)",
                     background: isCompleted ? "#f0fdf4" : "var(--card)"
@@ -154,11 +155,11 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
                       <small className="mut">{lesson.duration}</small>
                       {!isFree && !isCompleted && <span className="badge" style={{ background: "#fff3c4", color: "#6d5405" }}>مغلق</span>}
                     </span>
-                    {emb && canWatch ? (
+                    {lessonEmb && canWatch ? (
                       <button className="btn sm" onClick={() => setActiveLesson(lesson)}>
                         {isCompleted ? "إعادة المشاهدة" : "مشاهدة"}
                       </button>
-                    ) : !emb ? (
+                    ) : !lessonEmb ? (
                       <span className="mut">قريباً</span>
                     ) : (
                       <span className="mut">أكمل الدروس السابقة</span>
@@ -168,14 +169,14 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
               })}
             </div>
 
-            {activeLesson && emb && (
+            {activeLesson && activeLesson.videoUrl && youtubeEmbed(activeLesson.videoUrl) && (
               <div className="panel" style={{ marginTop: 20, position: "relative" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <h4 style={{ margin: 0 }}>{activeLesson.title}</h4>
                   <button className="btn sm ghost" onClick={() => setActiveLesson(null)}>إغلاق</button>
                 </div>
                 <div className="video">
-                  <iframe src={emb} allowFullScreen title={activeLesson.title} />
+                  <iframe src={youtubeEmbed(activeLesson.videoUrl)!} allowFullScreen title={activeLesson.title} />
                 </div>
                 <div className="row" style={{ marginTop: 12, justifyContent: "end" }}>
                   {!activeCourse.enrollment.completedLessons.includes(activeLesson.id) && (
@@ -188,7 +189,8 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
                       if (res.ok) window.location.reload();
                     }}>
                     ✅ تعليم كمكتمل
-                  </button>}
+                  </button>
+                  )}
                 </div>
               </div>
             )}

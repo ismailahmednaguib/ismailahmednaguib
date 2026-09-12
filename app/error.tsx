@@ -2,7 +2,7 @@
 "use client";
 import { useEffect } from "react";
 import Link from "next/link";
-import { getSiteSettings } from "./lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
@@ -25,7 +25,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
           <details style={{ marginTop: 16, textAlign: "start" }}>
             <summary className="mut">تفاصيل الخطأ (تطوير)</summary>
             <pre style={{ fontSize: 11, overflow: "auto", maxHeight: 200, background: "#1a1a1a", color: "#0f0", padding: 12, borderRadius: 8, marginTop: 8 }}>
-              {error.message}\n{digest && `Digest: ${digest}`}
+              {error.message}\n{error.digest && `Digest: ${error.digest}`}
             </pre>
           </details>
         )}

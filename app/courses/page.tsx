@@ -32,7 +32,7 @@ export default async function Courses({ searchParams }: { searchParams?: { [key:
         </div>
         {paged.length ? (
           <>
-            <div className="grid">{paged.map((c) => (<CourseCard key={c.slug} c={c} labels={{ details: g("cardDetails", "التفاصيل"), hours: g("cardHours", "ساعة"), free: g("cardFree", "مجاني"), currency: g("cardCurrency", "ج") }} />))}</div>
+            <div className="grid">{paged.map((c) => (<CourseCard key={c.slug} c={c} />))}</div>
             {totalPages > 1 && (
               <nav className="pagination" aria-label="ترقيم صفحات الدورات">
                 {safePage > 1 && <a className="btn sm ghost" href={makeUrl(safePage - 1)}>السابق</a>}

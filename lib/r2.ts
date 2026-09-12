@@ -48,6 +48,21 @@ export async function uploadToR2(
   return { url: "", key };
 }
 
+export async function listR2(): Promise<Array<{ key: string; size: number }>> {
+  if (!isR2Configured()) return [];
+  const client = r2Client();
+  const bucket = process.env.R2_BUCKET as string;
+  const result = await client.send(new ListObjectsV2Command({ Bucket: bucket, Prefix: "ian/" }));
+  return (result.Contents || []).map(obj => ({ key: obj.Key || "", size: obj.Size || 0 }));
+}
+
+export async function deleteR2(key: string): Promise<void> {
+  if (!isR2Configured()) return;
+  const client = r2Client();
+  const bucket = process.env.R2_BUCKET as string;
+  await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+}
+
 export function filesMode(): "r2" | "supabase" | "none" {
   if (isR2Configured()) return "r2";
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) return "supabase";

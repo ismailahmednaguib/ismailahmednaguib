@@ -22,7 +22,7 @@ export async function GET(req: Request) {
     admissions: await db.admissions().catch(() => []),
     settings: await db.settings().catch(() => ({})),
   };
-  await logExport(u.email, u.role, clientIp(req));
+  await logExport(u.email, u.role, clientIp());
   return NextResponse.json({ ok: true, backup: data });
 }
 
@@ -54,6 +54,6 @@ export async function POST(req: Request) {
     await db.write("settings.json", b["settings"]);
     restored.push("settings");
   }
-  await logImport(u.email, u.role, clientIp(req));
+  await logImport(u.email, u.role, clientIp());
   return NextResponse.json({ ok: true, restored });
 }

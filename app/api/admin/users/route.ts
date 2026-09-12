@@ -1,10 +1,10 @@
 // app/api/admin/users/route.ts : إضافة/تعديل/حذف المستخدمين من اللوحة
 import { NextResponse } from "next/server";
-import { db, type UserRow } from "../../../lib/db";
-import { hashPassword, checkPassword, cleanText } from "../../../lib/security";
-import { currentUser, clientIp } from "../../../lib/auth";
+import { db, type UserRow } from "@/lib/db";
+import { hashPassword, checkPassword, cleanText } from "@/lib/security";
+import { currentUser, clientIp } from "@/lib/auth";
 import { randomUUID } from "crypto";
-import { logAdd, logEdit, logDelete, logRoleChange, logPasswordChange, logEmailChange } from "../../../lib/activity";
+import { logAdd, logEdit, logDelete, logRoleChange, logPasswordChange, logEmailChange } from "@/lib/activity";
 
 export async function GET() {
   const u = await currentUser();
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   const hash = await hashPassword(password);
   users.push({ email, hash, role });
   await db.write("users.json", users);
-  await logAdd("users", email, `مستخدم جديد: ${email} (${role})`, u.email, u.role, clientIp(req));
+  await logAdd("users", email, `مستخدم جديد: ${email} (${role})`, u.email, u.role, clientIp());
   return NextResponse.json({ ok: true, user: { email, role } });
 }
 
@@ -49,19 +49,19 @@ export async function PUT(req: Request) {
     if (users.some((x) => x.email === newEmail)) return NextResponse.json({ error: "البريد الجديد مستخدم" }, { status: 400 });
     if (password && !(await checkPassword(password, users[i].hash))) return NextResponse.json({ error: "كلمة المرور الحالية خطأ" }, { status: 401 });
     users[i].email = newEmail;
-    await logEmailChange(oldEmail, newEmail, u.email, u.role, clientIp(req));
+    await logEmailChange(oldEmail, newEmail, u.email, u.role, clientIp());
   }
   if (role && role !== oldRole) {
     users[i].role = role;
-    await logRoleChange(email, role, u.email, u.role, clientIp(req));
+    await logRoleChange(email, role, u.email, u.role, clientIp());
   }
   if (password && password.length >= 10) {
     if (!(await checkPassword(password, users[i].hash))) return NextResponse.json({ error: "كلمة المرور الحالية خطأ" }, { status: 401 });
     users[i].hash = await hashPassword(password);
-    await logPasswordChange(users[i].email, u.email, u.role, clientIp(req));
+    await logPasswordChange(users[i].email, u.role, clientIp());
   }
   await db.write("users.json", users);
-  await logEdit("users", users[i].email, `مستخدم: ${users[i].email}`, u.email, u.role, `تعديل بيانات المستخدم`, clientIp(req));
+  await logEdit("users", users[i].email, `مستخدم: ${users[i].email}`, u.email, u.role, `تعديل بيانات المستخدم`, clientIp());
   return NextResponse.json({ ok: true, user: { email: users[i].email, role: users[i].role } });
 }
 
@@ -74,6 +74,6 @@ export async function DELETE(req: Request) {
   const kept = users.filter((x) => x.email !== email);
   if (kept.length === users.length) return NextResponse.json({ error: "المستخدم غير موجود" }, { status: 404 });
   await db.write("users.json", kept);
-  await logDelete("users", email, `مستخدم: ${email}`, u.email, u.role, clientIp(req));
+  await logDelete("users", email, `مستخدم: ${email}`, u.email, u.role, clientIp());
   return NextResponse.json({ ok: true });
 }

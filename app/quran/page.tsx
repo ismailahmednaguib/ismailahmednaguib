@@ -13,7 +13,7 @@ export default async function Quran() {
   return (
     <>
       <section className="page-head wrap"><h1>📖 {t("quranTitle", "المدرسة القرآنية")}</h1><p>{t("quranDesc", "")}</p></section>
-      <section className="wrap sec"><div className="sec-h"><h2>{t("quranCourses", "دورات القرآن")}</h2><Link href="/courses">{t("homeAllLink" in (s || {}) ? String((s as Record<string, string>).homeAllLink) : "الكل ←")}</Link></div>
+      <section className="wrap sec"><div className="sec-h"><h2>{t("quranCourses", "دورات القرآن")}</h2><Link href="/courses">{t("homeAllLink", "الكل ←")}</Link></div>
         <div className="grid">{courses.map((c) => (<div className="card" key={c.slug}><div className="pad"><b>{c.title}</b><span className="mut">{c.desc}</span><Link className="btn sm" href={`/courses/${c.slug}`}>{t("quranEnter", "ادخل الدورة")}</Link></div></div>))}</div></section>
       <section className="wrap sec"><div className="sec-h"><h2>{t("quranLessons", "دروس التجويد")}</h2></div>
         {lessons.map((l) => (<div className="lesson" key={l.id}><span>{l.title}</span>{l.videoUrl ? <a className="btn sm" href={l.videoUrl} target="_blank" rel="noreferrer">{t("quranWatch", "مشاهدة")}</a> : <span className="mut">{t("quranSoon", "قريبا")}</span>}</div>))}

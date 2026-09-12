@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { SiteSettings } from "./lib/site-settings";
+import type { SiteSettings } from "@/lib/site-settings";
 
 interface Props { s: SiteSettings; }
 
