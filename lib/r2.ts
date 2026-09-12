@@ -3,7 +3,7 @@
 // الاستخدام: كتب PDF كبيرة + صور — 10GB مجانا + باندويث غير محدود.
 // الإعداد من: Cloudflare Dashboard -> R2 -> Create bucket -> ثم
 // R2 -> Manage R2 API tokens -> Create API token (Object Read & Write).
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, ListObjectsV2Command, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 export function isR2Configured(): boolean {
   return !!(

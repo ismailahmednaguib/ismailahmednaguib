@@ -5,6 +5,7 @@ import { db } from "../../../lib/db";
 import { checkPassword, cleanText, loginAllowed, loginFailed, loginOk, makeToken, SESSION_COOKIE } from "../../../lib/security";
 import { cookieOpts } from "../../../lib/cookies";
 import { clientIp } from "../../../lib/auth";
+import { logLogin } from "../../../lib/activity";
 
 export async function POST(req: Request) {
   const ip = clientIp();
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "بيانات الدخول غير صحيحة" }, { status: 401 });
   }
   loginOk(ip);
+  await logLogin(admin.email, admin.role, ip);
   const token = await makeToken({ email: admin.email, role: admin.role });
   if (isForm) {
     const res = NextResponse.redirect(new URL("/dashboard", req.url));
@@ -37,6 +39,3 @@ export async function POST(req: Request) {
   res.cookies.set(SESSION_COOKIE, token, cookieOpts(req));
   return res;
 }
-
-
-

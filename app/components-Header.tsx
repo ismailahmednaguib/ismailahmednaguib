@@ -1,37 +1,40 @@
-// app/components-Header.tsx : الهيدر والقائمة فقط — الاسم يأتي من الإعدادات
+// app/components-Header.tsx : الهيدر والقائمة — كل كلمة من اللوحة
 import Link from "next/link";
 import NavBurger from "./NavBurger";
+import SearchBox from "./components-Search";
+import UserNav from "./UserNav";
+import ThemeToggle from "./ThemeToggle";
+import type { SiteSettings } from "../lib/site-settings";
 
-const LINKS = [
-  { href: "/", label: "الرئيسية" },
-  { href: "/courses", label: "الدورات" },
-  { href: "/library", label: "المكتبة" },
-  { href: "/quran", label: "المدرسة القرآنية" },
-  { href: "/scholars", label: "العلماء" },
-  { href: "/fatwa", label: "الفتاوى" },
-  { href: "/news", label: "الأخبار" },
-  { href: "/verify", label: "تحقق من شهادة" },
-  { href: "/admission", label: "التقديم" },
-  { href: "/dashboard", label: "لوحة التحكم" },
-];
-
-export default function Header({ siteName, tagline }: { siteName: string; tagline: string }) {
+export default function Header({ s }: { s: SiteSettings }) {
+  const LINKS = [
+    { href: "/", label: s.navHome || "الرئيسية" },
+    { href: "/courses", label: s.navCourses || "الدورات" },
+    { href: "/library", label: s.navLibrary || "المكتبة" },
+    { href: "/quran", label: s.navQuran || "المدرسة القرآنية" },
+    { href: "/scholars", label: s.navScholars || "العلماء" },
+    { href: "/fatwa", label: s.navFatwa || "الفتاوى" },
+    { href: "/news", label: s.navNews || "الأخبار" },
+    { href: "/verify", label: s.navVerify || "تحقق من شهادة" },
+    { href: "/admission", label: s.navAdmission || "التقديم" },
+  ];
   return (
     <header id="siteHeader">
       <div className="head-in">
         <NavBurger />
         <Link href="/" className="brand">
           <span className="logo">◈</span>
-          <span><b>{siteName}</b><small>{tagline}</small></span>
+          <span><b>{s.siteName}</b><small>{s.tagline}</small></span>
         </Link>
         <nav id="mainNav">
           {LINKS.map((l) => (<Link key={l.href} href={l.href}>{l.label}</Link>))}
         </nav>
         <div className="hact">
-          <Link className="btn sm gold" href="/admission">قدّم الآن</Link>
+          <SearchBox placeholder="ابحث..." className="header-search" />
+          <ThemeToggle />
+          <UserNav s={s} />
         </div>
       </div>
     </header>
   );
 }
-

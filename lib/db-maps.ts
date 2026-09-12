@@ -12,6 +12,8 @@ export function rowToCourse(r: Record<string, unknown>): Course {
     price: Number(r["price"] || 0),
     desc: String(r["description"] ?? r["desc"] ?? ""),
     videoUrl: String(r["video_url"] ?? r["videoUrl"] ?? ""),
+    tags: Array.isArray(r["tags"]) ? r["tags"].map(String) : (typeof r["tags"] === "string" ? r["tags"].split(",").map(s => s.trim()).filter(Boolean) : []),
+    category: String(r["category"] || ""),
   };
 }
 export function courseToRow(c: Course): Record<string, unknown> {
@@ -19,6 +21,7 @@ export function courseToRow(c: Course): Record<string, unknown> {
     slug: c.slug, title: c.title, track: c.track, level: c.level || "",
     teacher: c.teacher || "", hours: Number(c.hours || 0), price: Number(c.price || 0),
     description: c.desc || "", video_url: c.videoUrl || "",
+    tags: c.tags?.join(",") || "", category: c.category || "",
   };
 }
 export function rowToLesson(r: Record<string, unknown>): Lesson {

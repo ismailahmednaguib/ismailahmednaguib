@@ -1,16 +1,20 @@
-// app/dashboard/page.tsx : تجميع اللوحة — كل قسم في ملف مستقل + إعدادات الموقع + قبول/رفض التقديمات
+// app/dashboard/page.tsx : تجميع اللوحة — تحكم كامل + تعديل + نسخ احتياطي + شهادات مرقمة + سجل النشاطات + تحليلات
 import { redirect } from "next/navigation";
 import { currentUser } from "../../lib/auth";
 import { db } from "../../lib/db";
 import { getSiteSettings } from "../../lib/site-settings";
 import { getTracks } from "../../lib/track-settings";
 import type { DashboardRow } from "./ui";
-import { Sec, Tbl } from "./ui";
+import { Sec } from "./ui";
 import { FormCourse, FormLesson } from "./forms-1";
 import { FormBook, FormScholar, FormNews, FormFatwa } from "./forms-2";
 import { FormCert, FormSecurity } from "./forms-3";
 import { FormSite } from "./forms-settings";
+import { FormBackup } from "./forms-backup";
+import { CoursesTbl, LessonsTbl, BooksTbl, ScholarsTbl, NewsTbl, FatwasTbl, CertsTbl } from "./EditTables";
 import AdmissActions from "./AdmissActions";
+import ActivityLog from "./ActivityLog";
+import Analytics from "./Analytics";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +51,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
     <div className="dash wrap">
       <aside className="side noprint">
         <a className="btn sm" href="/api/logout">خروج ({u.email})</a>
+        <a href="#analytics"><button style={{ width: "100%" }}>📊 التحليلات</button></a>
         <a href="#site"><button style={{ width: "100%" }}>إعدادات الموقع</button></a>
         <a href="#courses"><button style={{ width: "100%" }}>الدورات</button></a>
         <a href="#lessons"><button style={{ width: "100%" }}>الدروس</button></a>
@@ -56,11 +61,13 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <a href="#fatwa"><button style={{ width: "100%" }}>الفتاوى</button></a>
         <a href="#certs"><button style={{ width: "100%" }}>الشهادات</button></a>
         <a href="#admiss"><button style={{ width: "100%" }}>التقديمات</button></a>
+        <a href="#backup"><button style={{ width: "100%" }}>النسخ الاحتياطي</button></a>
+        <a href="#activity"><button style={{ width: "100%" }}>سجل النشاطات</button></a>
         <a href="#security"><button style={{ width: "100%" }}>الأمان</button></a>
       </aside>
       <div>
         <section className="panel"><h2 style={{ margin: 0 }}>لوحة التحكم</h2>
-          <p className="mut">مرحبا {u.email} — من هنا تتحكم في كل حاجة: الموقع والدورات والدروس والكتب والعلماء والأخبار والفتاوى والشهادات والتقديمات والأمان.</p>
+          <p className="mut">مرحبا {u.email} — من هنا تتحكم في كل حاجة: الموقع والدورات والدروس والكتب والعلماء والأخبار والفتاوى والشهادات والتقديمات والنسخ الاحتياطي والأمان. كل جدول يدعم إضافة + تعديل + حذف.</p>
           <p className="mut">حالة الحفظ: {mode === "supabase" ? "☁️ حفظ سحابي دائم مفعّل ✓" : "💾 حفظ محلي"}</p>
           <div className="kpis">
             <div className="kpi"><b>{courses.length}</b><span>دورة</span></div>
@@ -70,13 +77,14 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
             <div className="kpi"><b>{admissions.length}</b><span>طلب</span></div>
           </div></section>
         <FormSite settings={(settings || fallbackSettings) as never} saved={saved} tracks={tracks} />
-        <FormCourse /><Tbl rows={courses} cols={["slug", "title", "track", "teacher", "price"]} />
-        <FormLesson /><Tbl rows={lessons} cols={["courseSlug", "title", "duration"]} />
-        <FormBook /><Tbl rows={books} cols={["slug", "title", "author"]} />
-        <FormScholar /><Tbl rows={scholars} cols={["slug", "name", "title"]} />
-        <FormNews /><Tbl rows={news} cols={["slug", "title", "date"]} />
-        <FormFatwa /><Tbl rows={fatwas} cols={["q", "scholar"]} />
-        <FormCert lastCode={lastCode} /><Tbl rows={certs} cols={["code", "student", "course", "grade"]} />
+        <Analytics />
+        <FormCourse /><CoursesTbl rows={courses} />
+        <FormLesson /><LessonsTbl rows={lessons} />
+        <FormBook /><BooksTbl rows={books} />
+        <FormScholar /><ScholarsTbl rows={scholars} />
+        <FormNews /><NewsTbl rows={news} />
+        <FormFatwa /><FatwasTbl rows={fatwas} />
+        <FormCert lastCode={lastCode} /><CertsTbl rows={certs} />
         <Sec id="admiss" title="طلبات التقديم — قبول / رفض / حذف">
           {admissions.length ? (
             <div style={{ overflowX: "auto" }}><table className="tbl"><thead><tr>
@@ -96,6 +104,8 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
             </tbody></table></div>
           ) : (<p className="mut">لا توجد طلبات بعد.</p>)}
         </Sec>
+        <FormBackup />
+        <ActivityLog />
         <FormSecurity searchParams={searchParams} />
       </div>
     </div>

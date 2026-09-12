@@ -1,26 +1,11 @@
-// lib/site-settings.ts : كل نصوص الموقع من لوحة التحكم — ملف مستقل
+﻿// lib/site-settings.ts : كل نصوص الموقع من لوحة التحكم — ملف مستقل
 // أي كلمة ظاهرة للزوار تأتي من هنا، والقيم الافتراضية من lib/site.ts
 import { SITE } from "./site";
 import { db } from "./db";
 
 export interface SiteSettings {
   siteName: string; tagline: string; announce: string;
-  contactEmail: string; contactPhone: string;
-  heroKicker: string; heroTitle: string; heroDesc: string;
-  footerAbout: string; footerRights: string;
-  coursesTitle: string; coursesDesc: string;
-  libraryTitle: string; libraryDesc: string;
-  quranTitle: string; quranDesc: string;
-  scholarsTitle: string; scholarsDesc: string;
-  fatwaTitle: string; fatwaDesc: string;
-  newsTitle: string; newsDesc: string;
-  verifyTitle: string; verifyDesc: string;
-  admissionTitle: string; admissionDesc: string;
-  admissionOkTitle: string; admissionOkDesc: string;
-  emptyCourses: string; emptyBooks: string; emptyNews: string;
-  certTitle: string; certSubtitle: string; certFooter: string;
-  certSignName: string; certSignTitle: string;
-  loginTitle: string; loginDesc: string;
+  [key: string]: string;
 }
 
 const DEFAULTS: SiteSettings = {
@@ -36,6 +21,7 @@ const DEFAULTS: SiteSettings = {
   footerRights: "جميع الحقوق محفوظة",
   coursesTitle: "الدورات والمسارات",
   coursesDesc: "اختر مسارك: شرعي • تدريبي • قرآني • جامعي مصغر",
+  coursesAll: "الكل",
   libraryTitle: "المكتبة",
   libraryDesc: "كتب ومتون PDF للتحميل والقراءة — تضاف من لوحة التحكم",
   quranTitle: "المدرسة القرآنية",
@@ -62,6 +48,190 @@ const DEFAULTS: SiteSettings = {
   certSignTitle: "التوقيع والختم",
   loginTitle: "دخول الإدارة",
   loginDesc: "خاص بإدارة المنصة فقط",
+  announceLink: "ساهم والتحق الآن",
+  navHome: "الرئيسية",
+  navCourses: "الدورات",
+  navLibrary: "المكتبة",
+  navQuran: "المدرسة القرآنية",
+  navScholars: "العلماء",
+  navFatwa: "الفتاوى",
+  navNews: "الأخبار",
+  navVerify: "تحقق من شهادة",
+  navAdmission: "التقديم",
+  navDashboard: "لوحة التحكم",
+  navCta: "قدّم الآن",
+  heroBtn1: "قدّم الآن",
+  heroBtn2: "تصفح الدورات",
+  heroBtn3: "تحقق من شهادة",
+  homeTracksTitle: "المسارات الأربعة",
+  homeFeaturedTitle: "دورات مميزة",
+  homeBooksTitle: "من المكتبة",
+  homeNewsTitle: "آخر الأخبار",
+  homeAllLink: "الكل ←",
+  homeTrackBtn: "ادخل المسار",
+  footerSec1: "أقسام",
+  footerSec2: "الطلاب",
+  footerSec3: "تواصل",
+  statTracksNum: "4",
+  statTracksLabel: "مسارات تعليمية",
+  statCoursesLabel: "دورة",
+  statBooksLabel: "كتاب",
+  statOnlineNum: "100%",
+  statOnlineLabel: "عن بعد",
+  libraryRead: "قراءة / تحميل",
+  quranCourses: "دورات القرآن",
+  quranLessons: "دروس التجويد",
+  quranIjazaTitle: "طلب إجازة مسندة:",
+  quranIjazaDesc: "أتمم الحفظ والمراجعة ثم قدّم من صفحة التقديم واختر مسار المدرسة القرآنية.",
+  quranIjazaBtn: "طلب إجازة",
+  quranEnter: "ادخل الدورة",
+  quranWatch: "مشاهدة",
+  quranSoon: "قريبا",
+  admissionName: "الاسم الكامل",
+  admissionPhone: "الهاتف / واتساب",
+  admissionTrack: "المسار",
+  admissionCourse: "الدورة",
+  admissionSubmit: "إرسال الطلب",
+  admissionNoCourses: "لا توجد دورات بعد",
+  verifyLabel: "كود الشهادة الموجود على شهادتك",
+  verifyBtn: "تحقق",
+  verifyNotFound: "لا توجد شهادة بهذا الكود — تأكد من الرقم وحاول مجددا.",
+  verifyPlaceholder: "مثال: IAN-2026-0001",
+  loginEmail: "البريد الإلكتروني",
+  loginPass: "كلمة المرور",
+  loginBtn: "دخول",
+  loginShow: "إظهار",
+  loginHide: "إخفاء",
+  loginErrTitle: "بيانات الدخول غير صحيحة",
+  loginErrDesc: "تأكد من البريد وكلمة المرور وحاول مجددا.",
+  loginForgot: "نسيت بيانات الدخول؟ تواصل مع إدارة المنصة.",
+  detailJoin: "التحق بالدورة",
+  detailAll: "كل الدورات",
+  detailLessons: "الدروس",
+  detailWatch: "مشاهدة",
+  detailSoon: "قريبا",
+  detailNoVideo: "الفيديو التعريفي يضاف من لوحة التحكم.",
+  detailFree: "مجاني",
+  certPrintBtn: "🖨️ طباعة الشهادة",
+  cardDetails: "التفاصيل",
+  cardHours: "ساعة",
+  cardFree: "مجاني",
+  cardCurrency: "ج",
+  certVerifyLink: "رابط التحقق",
+certCoursePrefix: "لإتمامه بنجاح دورة",
+  certGradeLabel: "التقوير",
+  certDateLabel: "التاريخ",
+  certCodeLabel: "رقم الشهادة",
+  // === هوية المنصة ===
+  logoUrl: "",
+  faviconUrl: "",
+  logoWidth: "140",
+  // === مظهر ===
+  themeMode: "light",
+  themePrimary: "#0b3d2e",
+  themeSecondary: "#147052",
+  themeGold: "#c9a227",
+  themeBg: "#f7f5ee",
+  themeCard: "#ffffff",
+  themeText: "#1e2421",
+  themeMut: "#6b766f",
+  themeBr: "#e6dfc9",
+  // === SEO ===
+  seoTitle: `${SITE.name} | ${SITE.tagline}`,
+  seoDescription: "منصة تعليمية: أكاديمية شرعية + معهد تدريبي + مدرسة قرآنية + أقسام جامعية مصغرة.",
+  seoKeywords: "أكاديمية شرعية, معهد تدريبي, مدرسة قرآنية, دورات, شهادات, فتاوى",
+  seoTwitter: "",
+  seoOgImage: "",
+  // === تبقيص الرئيسية ===
+  showTopbar: "1",
+  showHero: "1",
+  showStats: "1",
+  showTracks: "1",
+  showFeatured: "1",
+  showBooks: "1",
+  showNews: "1",
+  showFooter: "1",
+  // === تبقيص الأعمدة ===
+  footerColAbout: "1",
+  footerColNav: "1",
+  footerColStudents: "1",
+  footerColContact: "1",
+  // === تبقيص العناصر ===
+  showNavHome: "1",
+  showNavCourses: "1",
+  showNavLibrary: "1",
+  showNavQuran: "1",
+  showNavScholars: "1",
+  showNavFatwa: "1",
+  showNavNews: "1",
+  showNavVerify: "1",
+  showNavAdmission: "1",
+  showNavDashboard: "0",
+  showNavCta: "1",
+  // === إعدادات إضافية ===
+  maintenanceMode: "0",
+  maintenanceMessage: "المنصة تحت الصيانة — سيعاد تشغيلها قريبا.",
+  allowAdmissions: "1",
+  allowComments: "0",
+  siteUrl: "",
+  analyticsId: "",
+  contactFormEmail: "",
+  contactFormPhone: "",
+  // === نصوص إضافية ===
+notFoundTitle: "الصفحة غير موجودة",
+  notFoundDesc: "عذراً، لم نجد هذه Page. تأكد من الرابط أو اกลب للPrincipal.",
+  serverErrorTitle: "حدث خطأ غير متوقع",
+  serverErrorDesc: "نعتذر عن الإزعاج — فريق المنصة يعمل على إصلاحها.",
+  dashboardTitle: "لوحة التحكم",
+  dashboardDesc: "الicers في كل شيء من هنا",
+  dashboardNoAccess: "أنت غير مصرح بلوحة التحكم.",
+  bulkDeleteConfirm: "حذف جميع السجلات المحددة نهائياً؟ لا يمكن الرجوع فيها.",
+  toastSaved: "✓ تم الحفظ",
+  toastUpdated: "✓ تم التحديث",
+  toastDeleted: "✓ تم الحذف",
+  toastError: "✗ فشل",
+  toastUploaded: "✓ تم الرفع",
+  // === نصوص جدول الملفات ===
+  filesTitle: "ملفات المنصة",
+  filesEmpty: "لا توجد ملفات مرفقة بعد.",
+  filesDownload: "تنزيل",
+  filesDelete: "حذف",
+  filesManage: "Add الملفات",
+  // === نصوص المستخدمين ===
+  usersTitle: " المستخدمين",
+  usersEmpty: "لا توجد حسابات.",
+  usersAdd: "إضافة مستخدم",
+  usersRole: "الدور",
+  usersEmail: "البريد",
+  usersPass: "كلمة المرور",
+  usersConfirm: "تأكييد",
+  usersAdded: "✓ تمت إضافة المستخدم",
+  usersUpdated: "✓ تم التحديث",
+  usersDeleted: "✓ تم الحذف",
+  usersCannotSelfDelete: "لا يمكن حذف حسابك الخاص",
+  usersCannotSelfRole: "لا يمكن تغيير دورك الخاص",
+  // === نصوص المسارات ===
+  tracksTitle: "المسارات الأربعة",
+  tracksEmpty: "لا توجد مسارات.",
+  tracksIcon: "الأيقونة",
+  tracksSlug: "المعرف slug",
+  tracksAdded: "✓ تمت إضافة المسار",
+  tracksUpdated: "✓ تم التحديث",
+  tracksDeleted: "✓ تم الحذف",
+  tracksCannotDelete: "لا يمكن حذف مسار مستخدم",
+  // === نصوص السجل ===
+  activityTitle: "سجل النشاط",
+  activityEmpty: "لا توجد سجلات.",
+  activityLogin: " đăng nhập",
+  activityAdd: "أضافة",
+  activityEdit: "تعديل",
+  activityDelete: "حذف",
+  activityExport: "تصدير",
+  activityImport: "استيراد",
+  activityBackup: "نشخ افتراضي",
+  activityRole: "دور",
+  activityTable: "الجدول",
+  activityAt: "التاريخ",
 };
 
 export async function getSiteSettings(): Promise<SiteSettings> {

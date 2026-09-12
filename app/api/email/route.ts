@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 import { checkPassword, cleanText, makeToken, SESSION_COOKIE } from "../../../lib/security";
 import { cookieOpts } from "../../../lib/cookies";
-import { currentUser } from "../../../lib/auth";
+import { currentUser, clientIp } from "../../../lib/auth";
+import { logEmailChange } from "../../../lib/activity";
 
 function back(req: Request, q: string) {
   return NextResponse.redirect(new URL(`/dashboard${q}#security`, req.url));
@@ -38,8 +39,10 @@ export async function POST(req: Request) {
   if (!password || !(await checkPassword(password, users[i].hash))) {
     return form ? back(req, "?em=err&reason=wrong") : NextResponse.json({ error: "كلمة المرور خطأ" }, { status: 401 });
   }
+  const oldEmail = users[i].email;
   users[i].email = newEmail;
   await db.write("users.json", users);
+  await logEmailChange(oldEmail, newEmail, u.email, u.role, clientIp(req));
   const token = await makeToken({ email: newEmail, role: users[i].role });
   if (form) {
     const res = back(req, "?em=ok");

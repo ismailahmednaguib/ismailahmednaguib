@@ -1,4 +1,4 @@
-// app/components-Cards.tsx : كروت العرض (دورة بصورة يوتيوب / كتاب)
+// app/components-Cards.tsx : كروت العرض (دورة بصورة يوتيوب / كتاب) — نص الزر من اللوحة
 import Link from "next/link";
 import { youtubeThumb } from "../lib/youtube";
 import type { Course, Book } from "../lib/types";
@@ -15,12 +15,12 @@ export function CourseCard({ c }: { c: Course }) {
       </div></div>
   );
 }
-export function BookCard({ b }: { b: Book }) {
+export function BookCard({ b, readLabel }: { b: Book; readLabel?: string }) {
   return (
     <div className="card"><div className="thumb">📚</div>
       <div className="pad"><span className="badge">{b.track}</span><b>{b.title}</b>
         <span className="mut">{b.author} • {b.pages} صفحة</span><span className="mut">{b.desc}</span>
-        <div className="row"><a className="btn sm" href={b.pdfUrl || "#"} target="_blank" rel="noreferrer">قراءة / تحميل</a></div>
+        <div className="row"><a className="btn sm" href={b.pdfUrl || "#"} target="_blank" rel="noreferrer">{readLabel || "قراءة / تحميل"}</a></div>
       </div></div>
   );
 }

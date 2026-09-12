@@ -11,6 +11,8 @@ export function FormCourse() {
         <input name="title" placeholder="اسم الدورة" required />
         <div className="row"><input name="teacher" placeholder="المدرس" /><input name="level" placeholder="المستوى" /></div>
         <div className="row"><input name="hours" placeholder="الساعات" type="number" /><input name="price" placeholder="السعر 0=مجاني" type="number" /></div>
+        <input name="category" placeholder="التصنيف (مثال: فقه, حديث, برمجة)" />
+        <input name="tags" placeholder="الوسوم مفصولة بفاصلة (مثال: مبتدئ, متقدم, شهادة)" />
         <input name="videoUrl" placeholder="رابط يوتيوب التعريفي (غير مدرج) — مثال: https://youtu.be/xxxx" dir="ltr" />
         <textarea name="desc" placeholder="وصف الدورة" />
         <button className="btn gold" type="submit">إضافة الدورة</button>

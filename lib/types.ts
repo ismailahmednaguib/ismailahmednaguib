@@ -1,7 +1,7 @@
 // lib/types.ts : كل الأنواع في ملف مستقل — لا أسرار هنا
 export type Role = "admin" | "teacher" | "student";
 export type Track = "academy" | "institute" | "quran" | "college";
-export interface Course { slug: string; title: string; track: Track; level: string; teacher: string; hours: number; price: number; desc: string; videoUrl?: string; }
+export interface Course { slug: string; title: string; track: Track; level: string; teacher: string; hours: number; price: number; desc: string; videoUrl?: string; tags?: string[]; category?: string; }
 export interface Lesson { id: string; courseSlug: string; title: string; videoUrl: string; duration: string; free: boolean; }
 export interface Book { slug: string; title: string; author: string; track: Track; pages: number; pdfUrl: string; desc: string; }
 export interface Scholar { slug: string; name: string; title: string; bio: string; }

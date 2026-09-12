@@ -2,7 +2,8 @@
 import { NextResponse } from "next/server";
 import { db, type UserRow } from "../../../lib/db";
 import { checkPassword, hashPassword } from "../../../lib/security";
-import { currentUser } from "../../../lib/auth";
+import { currentUser, clientIp } from "../../../lib/auth";
+import { logPasswordChange } from "../../../lib/activity";
 
 function back(req: Request, q: string) {
   return NextResponse.redirect(new URL(`/dashboard${q}#security`, req.url));
@@ -19,7 +20,6 @@ export async function POST(req: Request) {
   const nw = String(raw["nw"] || "");
   const nw2 = String(raw["nw2"] || "");
 
-  // تحقق
   if (!old) return form ? back(req, "?pw=err&reason=no_old") : NextResponse.json({ error: "أدخل الحالية" }, { status: 400 });
   if (nw.length < 10) return form ? back(req, "?pw=err&reason=short") : NextResponse.json({ error: "الجديدة قصيرة (10+)" }, { status: 400 });
   if (nw2 && nw !== nw2) return form ? back(req, "?pw=err&reason=mismatch") : NextResponse.json({ error: "تأكيد الجديدة غير متطابق" }, { status: 400 });
@@ -33,8 +33,7 @@ export async function POST(req: Request) {
   }
   users[i].hash = await hashPassword(nw);
   await db.write("users.json", users);
+  await logPasswordChange(u.email, u.role, clientIp(req));
   if (form) return back(req, "?pw=ok");
   return NextResponse.json({ ok: true });
 }
-
-
