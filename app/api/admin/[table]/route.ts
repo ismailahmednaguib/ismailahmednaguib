@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { db } from "../../../../lib/db";
+import { nextCertCode } from "../../../../lib/cert-number";
 import { cleanText, cleanUrl } from "../../../../lib/security";
 import { currentUser } from "../../../../lib/auth";
 
@@ -50,12 +51,20 @@ export async function POST(req: Request, { params }: { params: { table: string }
   const raw = form ? Object.fromEntries((form as FormData).entries()) : await req.json().catch(() => ({}));
   const item = cleanObj(raw as Record<string, unknown>);
   if (!item["id"] && !item["slug"] && !item["code"]) item["id"] = randomUUID().slice(0, 8);
-  if (params.table === "certificates" && !item["code"]) item["code"] = "IAN-2026-" + Math.floor(1000 + Math.random() * 9000);
+  if (params.table === "certificates" && !item["code"]) {
+    const existing = await db.certs().catch(() => []);
+    item["code"] = nextCertCode(existing.map((c) => ({ code: c.code })));
+  }
   if (params.table === "admissions" && !item["date"]) item["date"] = new Date().toISOString().slice(0, 10);
   const all = await db.read<Record<string, unknown>[]>(file, []);
   all.push(item);
   await db.write(file, all);
-  if (form) return NextResponse.redirect(new URL("/dashboard", req.url));
+  if (form) {
+    if (params.table === "certificates" && item["code"]) {
+      return NextResponse.redirect(new URL(`/dashboard?cert=${encodeURIComponent(String(item["code"]))}#certs`, req.url));
+    }
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
   return NextResponse.json({ ok: true, item });
 }
 

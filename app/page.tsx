@@ -1,6 +1,6 @@
-// app/page.tsx : الرئيسية فقط — تجمع الأقسام الأربعة (النصوص من إعدادات اللوحة)
+// app/page.tsx : الرئيسية فقط — تجمع الأقسام الأربعة (النصوص والمسارات من اللوحة)
 import Link from "next/link";
-import { TRACKS } from "../lib/site";
+import { getTracks } from "../lib/track-settings";
 import { getSiteSettings } from "../lib/site-settings";
 import { db } from "../lib/db";
 import type { Course, Book, NewsItem } from "../lib/types";
@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const s = await getSiteSettings().catch(() => null);
+  const tracks = await getTracks().catch(() => []);
   const courses: Course[] = (await db.courses()).slice(0, 4);
   const books: Book[] = (await db.books()).slice(0, 4);
   const news: NewsItem[] = (await db.news()).slice(0, 3);
@@ -32,7 +33,7 @@ export default async function Home() {
         <div className="stat"><b>100%</b><span>عن بعد</span></div>
       </section>
       <section className="wrap sec"><div className="sec-h"><h2>المسارات الأربعة</h2></div>
-        <div className="grid">{TRACKS.map((t) => (
+        <div className="grid">{tracks.map((t) => (
           <div className="card" key={t.slug}><div className="thumb">{t.icon}</div>
             <div className="pad"><b>{t.title}</b><span className="mut">{t.desc}</span>
               <Link className="btn sm" href={`/courses?track=${t.slug}`}>ادخل المسار</Link></div></div>))}

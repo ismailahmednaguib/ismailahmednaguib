@@ -1,7 +1,27 @@
-/* styles-05-cert : الشهادات والطباعة فقط */
-.cert{border:3px double var(--gold);border-radius:16px;padding:28px 18px;text-align:center;background:#fffdf0;color:#222;max-width:700px;margin:16px auto}
-.cert h2{font-family:Amiri,serif;margin:0}
-.cert .cname{font-size:26px;font-weight:900;margin:10px 0}
-.qrcode{font-family:monospace;background:#111;color:#fff;display:inline-block;padding:6px 14px;border-radius:9px;letter-spacing:2px;margin-top:10px}
-.seal{width:74px;height:74px;border:3px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin:12px auto;font-size:28px;color:var(--g)}
-@media print{.cert{box-shadow:none;margin:0;max-width:100%}}
+/* styles-05-cert : الشهادة الرسمية المرقمة + الطباعة */
+.cert-wrap{max-width:760px;margin:16px auto}
+.cert{border:3px double var(--gold);border-radius:16px;padding:26px 22px;text-align:center;background:linear-gradient(180deg,#fffdf2,#fff);color:#222;position:relative;overflow:hidden}
+.cert::before{content:'';position:absolute;inset:8px;border:1px solid var(--gold);border-radius:10px;pointer-events:none;opacity:.6}
+.cert-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:2px solid var(--gold);padding-bottom:12px;margin-bottom:12px}
+.cert-brand{display:flex;gap:8px;align-items:center;text-align:start}
+.cert-logo{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#0b3d2e,#147052);color:#f0d35e;border:2px solid var(--gold);font-size:20px}
+.cert-brand b{display:block;line-height:1.2}.cert-brand small{color:#666;font-size:11px}
+.cert-no{font-size:12px;color:#666}.cert-no b{font-size:15px;color:#111;letter-spacing:1px}
+.cert h2.cert-title{font-family:Amiri,serif;margin:6px 0;font-size:34px}
+.cert-sub{color:#555;margin:0}
+.cert .cname{font-size:28px;font-weight:900;margin:12px 0;color:#0b3d2e}
+.cert-course{margin:4px 0 10px}.cert-course b{font-size:20px}
+.cert-meta{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;border-top:1px dashed var(--gold);border-bottom:1px dashed var(--gold);padding:8px 0;margin:10px 0}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:12px;flex-wrap:wrap}
+.cert-sign small{color:#666;display:block}
+.qrcode{font-family:monospace;background:#111;color:#fff;display:inline-block;padding:6px 14px;border-radius:9px;letter-spacing:2px;margin-top:6px}
+.seal{width:64px;height:64px;border:3px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin:8px auto 0;font-size:24px;color:var(--g)}
+.cert-verify small{display:block;color:#666;margin-top:4px;max-width:260px}
+@media print{
+#siteHeader,#topbar,footer,.side,.noprint,#toasts{display:none!important}
+body{background:#fff}
+.cert-wrap{max-width:100%;margin:0}
+.cert{box-shadow:none;margin:0;max-width:100%}
+.cert-foot a{display:none}
+}
+

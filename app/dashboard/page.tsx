@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "../../lib/auth";
 import { db } from "../../lib/db";
 import { getSiteSettings } from "../../lib/site-settings";
+import { getTracks } from "../../lib/track-settings";
 import type { DashboardRow } from "./ui";
 import { Sec, Tbl } from "./ui";
 import { FormCourse, FormLesson } from "./forms-1";
@@ -19,7 +20,9 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
   if (u.role !== "admin") redirect("/login");
   const mode = db.storageMode();
   const settings = await getSiteSettings().catch(() => null);
+  const tracks = await getTracks().catch(() => []);
   const saved = searchParams?.settings === "ok";
+  const lastCode = typeof searchParams?.cert === "string" ? searchParams.cert : undefined;
   const courses: DashboardRow[] = (await db.courses()).map((x) => ({ ...x, __t: "courses" }));
   const lessons: DashboardRow[] = (await db.lessons()).map((x) => ({ ...x, __t: "lessons" }));
   const books: DashboardRow[] = (await db.books()).map((x) => ({ ...x, __t: "books" }));
@@ -31,7 +34,14 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
   const fallbackSettings = {
     siteName: "منصتنا التعليمية", tagline: "", announce: "التقديم مفتوح",
     contactEmail: "", contactPhone: "", heroKicker: "التقديم مفتوح",
-    heroTitle: "منصتنا التعليمية", heroDesc: "",
+    heroTitle: "منصتنا التعليمية", heroDesc: "", footerAbout: "", footerRights: "",
+    coursesTitle: "الدورات", coursesDesc: "", libraryTitle: "المكتبة", libraryDesc: "",
+    quranTitle: "المدرسة القرآنية", quranDesc: "", scholarsTitle: "العلماء", scholarsDesc: "",
+    fatwaTitle: "الفتاوى", fatwaDesc: "", newsTitle: "الأخبار", newsDesc: "",
+    verifyTitle: "التحقق", verifyDesc: "", admissionTitle: "التقديم", admissionDesc: "",
+    admissionOkTitle: "", admissionOkDesc: "", emptyCourses: "", emptyBooks: "", emptyNews: "",
+    certTitle: "شهادة إتمام", certSubtitle: "", certFooter: "", certSignName: "", certSignTitle: "",
+    loginTitle: "دخول الإدارة", loginDesc: "",
   };
   return (
     <div className="dash wrap">
@@ -59,14 +69,14 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
             <div className="kpi"><b>{certs.length}</b><span>شهادة</span></div>
             <div className="kpi"><b>{admissions.length}</b><span>طلب</span></div>
           </div></section>
-        <FormSite settings={settings || fallbackSettings} saved={saved} />
+        <FormSite settings={(settings || fallbackSettings) as never} saved={saved} tracks={tracks} />
         <FormCourse /><Tbl rows={courses} cols={["slug", "title", "track", "teacher", "price"]} />
         <FormLesson /><Tbl rows={lessons} cols={["courseSlug", "title", "duration"]} />
         <FormBook /><Tbl rows={books} cols={["slug", "title", "author"]} />
         <FormScholar /><Tbl rows={scholars} cols={["slug", "name", "title"]} />
         <FormNews /><Tbl rows={news} cols={["slug", "title", "date"]} />
         <FormFatwa /><Tbl rows={fatwas} cols={["q", "scholar"]} />
-        <FormCert /><Tbl rows={certs} cols={["code", "student", "course", "grade"]} />
+        <FormCert lastCode={lastCode} /><Tbl rows={certs} cols={["code", "student", "course", "grade"]} />
         <Sec id="admiss" title="طلبات التقديم — قبول / رفض / حذف">
           {admissions.length ? (
             <div style={{ overflowX: "auto" }}><table className="tbl"><thead><tr>

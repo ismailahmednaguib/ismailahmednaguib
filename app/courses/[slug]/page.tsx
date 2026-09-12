@@ -1,31 +1,18 @@
-// app/courses/[slug]/page.tsx : تفاصيل الدورة + الدروس والفيديو — ملف مستقل
+// app/courses/[slug]/page.tsx : تفاصيل الدورة + الدروس والفيديو — يوتيوب بكل صيغه
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "../../../lib/db";
+import { youtubeEmbed } from "../../../lib/youtube";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
-
-function ytEmbed(url: string): string | null {
-  if (!url) return null;
-  const u = url.trim();
-  if (u.includes("/embed/")) return u;
-  const short = u.match(/youtu\.be\/([\w-]{6,})/);
-  if (short) return `https://www.youtube.com/embed/${short[1]}`;
-  const watch = u.match(/[?&]v=([\w-]{6,})/);
-  if (watch) return `https://www.youtube.com/embed/${watch[1]}`;
-  const shorts = u.match(/shorts\/([\w-]{6,})/);
-  if (shorts) return `https://www.youtube.com/embed/${shorts[1]}`;
-  if (u.includes("youtube.com") || u.includes("youtu.be")) return u;
-  return u;
-}
 
 export default async function CourseDetail({ params }: { params: { slug: string } }) {
   const courses = await db.courses();
   const c = courses.find((x) => x.slug === params.slug);
   if (!c) return notFound();
   const lessons = (await db.lessons()).filter((l) => l.courseSlug === c.slug);
-  const emb = c.videoUrl ? ytEmbed(c.videoUrl) : null;
+  const emb = c.videoUrl ? youtubeEmbed(c.videoUrl) : null;
   return (
     <>
       <section className="page-head wrap"><span className="kicker">{c.track} • {c.level}</span><h1>{c.title}</h1><p>{c.teacher} • {c.hours} ساعة • {c.price === 0 ? "مجاني" : c.price + " ج"}</p></section>

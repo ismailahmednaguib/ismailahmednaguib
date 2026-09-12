@@ -19,6 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     siteName: SITE.name, tagline: SITE.tagline, announce: "التقديم مفتوح",
     contactEmail: SITE.contact.email, contactPhone: SITE.contact.phone,
     heroKicker: "", heroTitle: SITE.name, heroDesc: "",
+    footerAbout: "", footerRights: "جميع الحقوق محفوظة",
   }));
   return (
     <html lang="ar" dir="rtl">
@@ -26,7 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div id="topbar">{s.announce} — <a href="/admission">ساهم والتحق الآن</a></div>
         <Header siteName={s.siteName} tagline={s.tagline} />
         <main className="wrap" style={{ minHeight: "60vh" }}>{children}</main>
-        <Footer siteName={s.siteName} tagline={s.tagline} contactEmail={s.contactEmail} contactPhone={s.contactPhone} />
+        <Footer siteName={s.siteName} tagline={s.tagline} contactEmail={s.contactEmail} contactPhone={s.contactPhone} footerAbout={(s as Record<string, string>).footerAbout || ""} footerRights={(s as Record<string, string>).footerRights || "جميع الحقوق محفوظة"} />
       </body>
     </html>
   );

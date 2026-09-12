@@ -1,10 +1,13 @@
-// app/components-Cards.tsx : كروت العرض فقط (دورة / كتاب)
+// app/components-Cards.tsx : كروت العرض (دورة بصورة يوتيوب / كتاب)
 import Link from "next/link";
+import { youtubeThumb } from "../lib/youtube";
 import type { Course, Book } from "../lib/types";
 
 export function CourseCard({ c }: { c: Course }) {
+  const thumb = c.videoUrl ? youtubeThumb(c.videoUrl) : null;
   return (
-    <div className="card"><div className="thumb">🎓</div>
+    <div className="card">
+      <div className="thumb">{thumb ? <img src={thumb} alt={c.title} loading="lazy" /> : "🎓"}</div>
       <div className="pad"><span className="badge">{c.track} • {c.level}</span>
         <b>{c.title}</b><span className="mut">{c.teacher} • {c.hours} ساعة</span>
         <span className="mut">{c.desc}</span>

@@ -1,14 +1,16 @@
-// app/dashboard/forms-3.tsx : الشهادات + الأمان فقط (باسورد + إيميل مع رسائل)
+// app/dashboard/forms-3.tsx : الشهادات برقم تسلسلي + الأمان (باسورد + إيميل مع رسائل)
 import { Sec } from "./ui";
 
-export function FormCert() {
+export function FormCert({ lastCode }: { lastCode?: string }) {
   return (
-    <Sec id="certs" title="الشهادات — إصدار بكود تحقق">
+    <Sec id="certs" title="الشهادات — إصدار برقم تسلسلي رسمي">
+      {lastCode && (<div className="panel" style={{ borderColor: "var(--g2)" }}><b>✓ تم إصدار الشهادة برقم: </b><span className="qrcode" dir="ltr">{lastCode}</span><br /><a className="btn sm gold" style={{ marginTop: 8 }} href={`/verify?code=${encodeURIComponent(lastCode)}`} target="_blank" rel="noreferrer">عرض وطباعة الشهادة</a></div>)}
       <form className="frm" method="POST" action="/api/admin/certificates">
         <div className="row"><input name="student" placeholder="اسم الطالب" required /><input name="course" placeholder="الدورة" required /></div>
-        <div className="row"><input name="grade" placeholder="التقدير" /><input name="date" placeholder="2026-09-11" /></div>
-        <button className="btn gold" type="submit">إصدار شهادة (كود تلقائي)</button>
+        <div className="row"><input name="grade" placeholder="التقدير (مثال: ممتاز)" /><input name="date" placeholder="2026-01-01" /></div>
+        <button className="btn gold" type="submit">إصدار شهادة برقم تلقائي</button>
       </form>
+      <p className="mut">الترقيم تسلسلي رسمي لا يتكرر (IAN-YYYY-XXXX) — يظهر بعد الإصدار مع زر عرض وطباعة.</p>
     </Sec>
   );
 }
