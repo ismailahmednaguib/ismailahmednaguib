@@ -434,7 +434,18 @@
     "loading": "جاري التحميل...",
     "joinError": "فشل في الانضمام للجلسة",
     "updateError": "فشل في تحديث الجلسة",
-    "networkError": "خطأ في الشبكة"
+    "networkError": "خطأ في الشبكة",
+    "scheduledAt": "مجدولة في",
+    "sessionNotFound": "الجلسة غير موجودة",
+    "backToSessions": "العودة للجلسات",
+    "sessionNotAvailable": "هذه الجلسة غير متاحة للانضمام",
+    "joined": "انضم",
+    "left": "غادر",
+    "role": {
+      "participant": "مشارك",
+      "host": "مضيف",
+      "co_host": "مساعد مضيف"
+    }
   },
   "pwa": {
     "installTitle": "ثبت التطبيق",

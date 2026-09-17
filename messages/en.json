@@ -434,7 +434,18 @@
     "loading": "Loading...",
     "joinError": "Failed to join session",
     "updateError": "Failed to update session",
-    "networkError": "Network error"
+    "networkError": "Network error",
+    "scheduledAt": "Scheduled At",
+    "sessionNotFound": "Session Not Found",
+    "backToSessions": "Back to Sessions",
+    "sessionNotAvailable": "This session is not available for joining",
+    "joined": "Joined",
+    "left": "Left",
+    "role": {
+      "participant": "Participant",
+      "host": "Host",
+      "co_host": "Co-Host"
+    }
   },
   "pwa": {
     "installTitle": "Install App",
