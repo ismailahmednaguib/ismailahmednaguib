@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
 import { getSiteSettings } from "@/lib/site-settings";
 import { getMessages } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import "../../styles-01-base.css";
 import "../../styles-02-layout.css";
 import "../../styles-03-components.css";
@@ -24,34 +25,62 @@ export const metadata: Metadata = {
   description: "منصة تعليمية: أكاديمية شرعية + معهد تدريبي + مدرسة قرآنية + أقسام جامعية مصغرة.",
 };
 
+const DEFAULT_SETTINGS = {
+  siteName: SITE.name,
+  tagline: SITE.tagline,
+  announce: "التقديم مفتوح",
+  announceLink: "ساهم والتحق الآن",
+  contactEmail: SITE.contact.email,
+  contactPhone: SITE.contact.phone,
+  heroKicker: "",
+  heroTitle: SITE.name,
+  heroDesc: "",
+  footerAbout: "",
+  footerRights: "جميع الحقوق محفوظة",
+  themeMode: "light",
+};
+
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const { locale } = await params;
-  const messages = await getMessages({ locale });
-  const s = await getSiteSettings().catch(() => ({
-    siteName: SITE.name, tagline: SITE.tagline, announce: "التقديم مفتوح",
-    announceLink: "ساهم والتحق الآن",
-    contactEmail: SITE.contact.email, contactPhone: SITE.contact.phone,
-    heroKicker: "", heroTitle: SITE.name, heroDesc: "",
-    footerAbout: "", footerRights: "جميع الحقوق محفوظة",
-    themeMode: "light",
-  } as never));
-  const full = s as never as Record<string, string>;
+  
+  // التحقق من الـ locale
+  const validLocale = routing.locales.includes(locale as "ar" | "en") ? locale : routing.defaultLocale;
+  
+  // تحميل الرسائل مع fallback
+  let messages: { common?: { loading?: string }; [key: string]: unknown } = {};
+  try {
+    messages = await getMessages({ locale: validLocale });
+  } catch {
+    messages = (await import(`@/messages/${routing.defaultLocale}.json`)).default;
+  }
+  
+  // تحميل الإعدادات مع fallback
+  let full = DEFAULT_SETTINGS;
+  try {
+    const s = await getSiteSettings();
+    if (s && typeof s === "object") {
+      full = { ...DEFAULT_SETTINGS, ...s };
+    }
+  } catch {
+    // استخدام الافتراضي
+  }
+  
   const theme = full.themeMode || "light";
-  const dir = locale === "ar" ? "rtl" : "ltr";
+  const dir = validLocale === "ar" ? "rtl" : "ltr";
   
   return (
-    <IntlProvider locale={locale} messages={messages}>
-      <html lang={locale} dir={dir} data-theme={theme}>
+    <IntlProvider locale={validLocale} messages={messages}>
+      <html lang={validLocale} dir={dir} data-theme={theme}>
         <head>
           <ThemeScript theme={theme} />
         </head>
         <body>
           <MaintenanceBanner />
-          <a href="#main-content" className="skip-link">{messages.common.loading}</a>
-          <div id="topbar">{full.announce} — <a href={`/${locale}/admission`}>{full.announceLink || "ساهم والتحق الآن"}</a></div>
-          <Header s={s} locale={locale} />
+          <a href="#main-content" className="skip-link">{(messages.common?.loading as string) || "جاري التحميل..."}</a>
+          <div id="topbar">{full.announce} — <a href={`/${validLocale}/admission`}>{full.announceLink || "ساهم والتحق الآن"}</a></div>
+          <Header s={full} locale={validLocale} />
           <main id="main-content" className="wrap" style={{ minHeight: "60vh" }}>{children}</main>
-          <Footer s={s} locale={locale} />
+          <Footer s={full} locale={validLocale} />
           <PWAInstall />
         </body>
       </html>
