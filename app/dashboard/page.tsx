@@ -15,6 +15,8 @@ import { CoursesTbl, LessonsTbl, BooksTbl, ScholarsTbl, NewsTbl, FatwasTbl, Cert
 import AdmissActions from "./AdmissActions";
 import ActivityLog from "./ActivityLog";
 import Analytics from "./Analytics";
+import EnrollmentsTbl from "./EnrollmentsTbl";
+import FilesTbl from "./FilesTbl";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +63,8 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <a href="#fatwa"><button style={{ width: "100%" }}>الفتاوى</button></a>
         <a href="#certs"><button style={{ width: "100%" }}>الشهادات</button></a>
         <a href="#admiss"><button style={{ width: "100%" }}>التقديمات</button></a>
+        <a href="#enrollments"><button style={{ width: "100%" }}>إدارة التسجيلات</button></a>
+        <a href="#files"><button style={{ width: "100%" }}>الملفات</button></a>
         <a href="#backup"><button style={{ width: "100%" }}>النسخ الاحتياطي</button></a>
         <a href="#activity"><button style={{ width: "100%" }}>سجل النشاطات</button></a>
         <a href="#security"><button style={{ width: "100%" }}>الأمان</button></a>
@@ -85,6 +89,8 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <FormNews /><NewsTbl rows={news} />
         <FormFatwa /><FatwasTbl rows={fatwas} />
         <FormCert lastCode={lastCode} /><CertsTbl rows={certs} />
+        <EnrollmentsTbl courses={await db.courses()} />
+        <FilesTbl />
         <Sec id="admiss" title="طلبات التقديم — قبول / رفض / حذف">
           {admissions.length ? (
             <div style={{ overflowX: "auto" }}><table className="tbl"><thead><tr>

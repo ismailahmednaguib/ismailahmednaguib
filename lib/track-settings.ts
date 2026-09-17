@@ -15,8 +15,10 @@ export async function getTracks(): Promise<TrackSetting[]> {
       ? String(raw[`track_${t.slug}_title`]) : t.title;
     const de = typeof raw[`track_${t.slug}_desc`] === "string" && String(raw[`track_${t.slug}_desc`]).trim()
       ? String(raw[`track_${t.slug}_desc`]) : t.desc;
-    return { slug: t.slug, title: ti, desc: de, icon: t.icon };
+    const ic = typeof raw[`track_${t.slug}_icon`] === "string" && String(raw[`track_${t.slug}_icon`]).trim()
+      ? String(raw[`track_${t.slug}_icon`]) : t.icon;
+    return { slug: t.slug, title: ti, desc: de, icon: ic };
   });
 }
 
-export const TRACK_KEYS = ["academy", "institute", "quran", "college"].flatMap((s) => [`track_${s}_title`, `track_${s}_desc`]);
+export const TRACK_KEYS = ["academy", "institute", "quran", "college"].flatMap((s) => [`track_${s}_title`, `track_${s}_desc`, `track_${s}_icon`]);

@@ -5,14 +5,14 @@ import { SITE_KEYS } from "../../lib/site-settings";
 import type { TrackSetting } from "../../lib/track-settings";
 import { AR, GROUPS } from "../../lib/settings-labels";
 
-function Field({ name, label, value }: { name: string; label: string; value: string }) {
+function Field({ name, label, value, type = "text" }: { name: string; label: string; value: string; type?: string }) {
   const long = value.length > 90;
   return (
     <div>
       <label>{label}</label>
       {long
         ? <textarea name={name} defaultValue={value} rows={2} />
-        : <input name={name} defaultValue={value} maxLength={800} />}
+        : <input name={name} defaultValue={value} maxLength={800} type={type} />}
     </div>
   );
 }
@@ -45,6 +45,7 @@ export function FormSite({ settings, saved, tracks }: { settings: SiteSettings; 
               <b>{x.slug}</b>
               <Field name={`track_${x.slug}_title`} label="العنوان" value={x.title} />
               <Field name={`track_${x.slug}_desc`} label="الوصف" value={x.desc} />
+              <Field name={`track_${x.slug}_icon`} label="الأيقونة (Emoji)" value={x.icon} type="text" />
             </div>
           ))}
         </div>
