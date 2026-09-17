@@ -96,6 +96,6 @@ export const config = {
     "/dashboard/:path*", 
     "/student/:path*", 
     "/api/:path*",
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|login|api/login).*)"
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|login|api/login|ar/login|en/login).*)"
   ] 
 };
