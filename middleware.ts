@@ -37,6 +37,14 @@ function isRedirectResponse(response: NextResponse): boolean {
   return (response.status === 307 || response.status === 308) && response.headers.get("location") !== null;
 }
 
+function getLocaleFromPath(pathname: string): string {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length > 0 && routing.locales.includes(segments[0] as "ar" | "en")) {
+    return segments[0];
+  }
+  return routing.defaultLocale;
+}
+
 export async function middleware(req: NextRequest) {
   // تطبيق i18n middleware أولاً مع معالجة الأخطاء
   let intlResponse: NextResponse | null = null;
@@ -44,7 +52,6 @@ export async function middleware(req: NextRequest) {
     intlResponse = intlMiddleware(req);
   } catch (e) {
     console.error("i18n middleware error:", e);
-    // في حالة خطأ، نكمل بدون i18n redirect
   }
   
   if (intlResponse && isRedirectResponse(intlResponse)) {
@@ -78,26 +85,29 @@ export async function middleware(req: NextRequest) {
     res.headers.set("X-RateLimit-Reset", String(Math.ceil((rateLimitMap.get(ip)?.resetAt || Date.now() + RATE_WINDOW) / 1000)));
   }
 
+  const locale = getLocaleFromPath(req.nextUrl.pathname);
+  const loginUrl = `/${locale}/login`;
+
   // حماية لوحة التحكم
   if (req.nextUrl.pathname.startsWith("/dashboard")) {
     const token = req.cookies.get("ian_session")?.value;
-    if (!token) return NextResponse.redirect(new URL("/login", req.url));
+    if (!token) return NextResponse.redirect(new URL(loginUrl, req.url));
     try {
       await jwtVerify(token, secret);
     } catch {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL(loginUrl, req.url));
     }
   }
 
   // حماية المسارات الإدارية
   if (req.nextUrl.pathname.startsWith("/student")) {
     const token = req.cookies.get("ian_session")?.value;
-    if (!token) return NextResponse.redirect(new URL("/login", req.url));
+    if (!token) return NextResponse.redirect(new URL(loginUrl, req.url));
     try {
       const { payload } = await jwtVerify(token, secret);
-      if (payload.role === "admin") return NextResponse.redirect(new URL("/dashboard", req.url));
+      if (payload.role === "admin") return NextResponse.redirect(new URL(`/${locale}/dashboard`, req.url));
     } catch {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL(loginUrl, req.url));
     }
   }
 
