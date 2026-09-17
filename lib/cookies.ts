@@ -7,11 +7,18 @@ export function useSecure(req: Request): boolean {
   if (req.url.startsWith("https://")) return true;
   try {
     const host = new URL(req.url).hostname;
-    if (host === "localhost" || host === "127.0.0.1") return false;
+    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return false;
   } catch { /* تجاهل */ }
   return process.env.NODE_ENV === "production";
 }
 
 export function cookieOpts(req: Request) {
-  return { httpOnly: true, sameSite: "lax" as const, secure: useSecure(req), path: "/", maxAge: 43200 };
+  const isSecure = useSecure(req);
+  return { 
+    httpOnly: true, 
+    sameSite: isSecure ? "none" as const : "lax" as const, 
+    secure: isSecure, 
+    path: "/", 
+    maxAge: 43200 
+  };
 }

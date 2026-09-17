@@ -32,6 +32,11 @@ export async function middleware(req: NextRequest) {
   const ip = getClientIp(req);
   const res = NextResponse.next();
   
+  // تخطي فحص تسجيل الدخول لمسار API الدخول
+  if (req.nextUrl.pathname === "/api/login" && req.method === "POST") {
+    return res;
+  }
+  
   // هيدرات أمان عامة
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -82,6 +87,6 @@ export const config = {
     "/dashboard/:path*", 
     "/student/:path*", 
     "/api/:path*",
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)"
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|login|api/login).*)"
   ] 
 };
