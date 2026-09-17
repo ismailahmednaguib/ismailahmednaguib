@@ -37,6 +37,8 @@ export async function GET(req: Request) {
 
   if (courses.length) {
     for (const c of courses) {
+      // تجاهل غير المنشورة في البحث العام
+      if (c.published === false) continue;
       if (matches(c.title) || matches(c.desc) || matches(c.teacher)) {
         results.push({
           type: "course",
@@ -52,6 +54,7 @@ export async function GET(req: Request) {
 
   if (books.length && results.length < limit) {
     for (const b of books) {
+      if (b.published === false) continue;
       if (matches(b.title) || matches(b.desc) || matches(b.author)) {
         results.push({
           type: "book",
@@ -67,6 +70,7 @@ export async function GET(req: Request) {
 
   if (news.length && results.length < limit) {
     for (const n of news) {
+      if (n.published === false) continue;
       if (matches(n.title) || matches(n.body)) {
         results.push({
           type: "news",
@@ -81,6 +85,7 @@ export async function GET(req: Request) {
 
   if (scholars.length && results.length < limit) {
     for (const s of scholars) {
+      if (s.published === false) continue;
       if (matches(s.name) || matches(s.title) || matches(s.bio)) {
         results.push({
           type: "scholar",
@@ -95,6 +100,7 @@ export async function GET(req: Request) {
 
   if (fatwas.length && results.length < limit) {
     for (const f of fatwas) {
+      if (f.published === false) continue;
       if (matches(f.q) || matches(f.a) || matches(f.scholar)) {
         results.push({
           type: "fatwa",

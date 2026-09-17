@@ -10,6 +10,8 @@ export function FormBook() {
         <select name="track"><option value="academy">academy</option><option value="institute">institute</option><option value="quran">quran</option><option value="college">college</option></select></div>
         <input name="title" placeholder="اسم الكتاب" required />
         <div className="row"><input name="author" placeholder="المؤلف" /><input name="pages" placeholder="الصفحات" type="number" /></div>
+        <input name="category" placeholder="التصنيف (مثال: فقه, تفسير, برمجة)" />
+        <input name="tags" placeholder="الوسوم مفصولة بفاصلة (مثال: مبتدئ, متقدم, شهادة)" />
         <input name="pdfUrl" placeholder="رابط PDF — ارفع بالأعلى وسيوضع هنا تلقائيا أو الصق رابطا" dir="ltr" />
         <textarea name="desc" placeholder="وصف" />
         <button className="btn gold" type="submit">إضافة الكتاب</button>

@@ -103,12 +103,14 @@ export function LessonsTbl({ rows }: { rows: DashboardRow[] }) {
 }
 
 export function BooksTbl({ rows }: { rows: DashboardRow[] }) {
-  return <RowTbl rows={rows} cols={["slug", "title", "author", "order"]} table="books" fields={[
+  return <RowTbl rows={rows} cols={["slug", "title", "author", "category", "order"]} table="books" fields={[
     { name: "slug", label: "slug (ثابت)", readonly: true },
     { name: "title", label: "اسم الكتاب" },
     { name: "author", label: "المؤلف" },
     { name: "track", label: "المسار", type: "select", options: TRACKS },
     { name: "pages", label: "الصفحات", type: "number" },
+    { name: "category", label: "التصنيف" },
+    { name: "tags", label: "الوسوم (مفصولة بفاصلة)" },
     { name: "pdfUrl", label: "رابط PDF" },
     { name: "desc", label: "الوصف", type: "textarea" },
     { name: "published", label: "منشور", type: "checkbox" },
