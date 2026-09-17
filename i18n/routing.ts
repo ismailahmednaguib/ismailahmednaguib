@@ -25,5 +25,11 @@ export const routing = defineRouting({
     "/search": "/search",
     "/student": "/student",
     "/verify": "/verify",
+    "/live": "/live",
+    "/live/[id]": "/live/[id]",
+    "/forums/[id]": "/forums/[id]",
+    "/forums/[id]/topics/[topicId]": "/forums/[id]/topics/[topicId]",
+    "/teacher": "/teacher",
+    "/payments/success": "/payments/success",
   },
 });

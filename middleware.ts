@@ -33,10 +33,14 @@ function getClientIp(req: NextRequest): string {
 // i18n middleware
 const intlMiddleware = createIntlMiddleware(routing);
 
+function isRedirectResponse(response: NextResponse): boolean {
+  return response.status === 307 || response.status === 308 || response.headers.get("location") !== null;
+}
+
 export async function middleware(req: NextRequest) {
   // تطبيق i18n middleware أولاً
   const intlResponse = intlMiddleware(req);
-  if (intlResponse) return intlResponse;
+  if (isRedirectResponse(intlResponse)) return intlResponse;
   
   const ip = getClientIp(req);
   const res = NextResponse.next();
