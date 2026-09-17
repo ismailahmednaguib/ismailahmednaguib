@@ -229,7 +229,21 @@
     "certificateVerified": "Certificate is Valid and Verified",
     "certificateInvalid": "Certificate is Invalid",
     "downloadPdf": "Download PDF",
-    "print": "Print"
+    "print": "Print",
+    "generatePdf": "Generate PDF",
+    "generatingPdf": "Generating PDF...",
+    "pdfGenerated": "Certificate generated successfully",
+    "pdfError": "Failed to generate certificate",
+    "verifyTitle": "Verify Certificate",
+    "enterCode": "Enter certificate code",
+    "verify": "Verify",
+    "verifying": "Verifying...",
+    "notFound": "Certificate not found",
+    "certificateDetails": "Certificate Details",
+    "issuedTo": "Issued to",
+    "courseCompleted": "Completed Course",
+    "grade": "Grade",
+    "verifyUrl": "Verification URL"
   },
   "footer": {
     "about": "About Us",

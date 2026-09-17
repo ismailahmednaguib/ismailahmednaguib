@@ -229,7 +229,21 @@
     "certificateVerified": "الشهادة صحيحة ومعتمدة",
     "certificateInvalid": "الشهادة غير صحيحة",
     "downloadPdf": "تحميل PDF",
-    "print": "طباعة"
+    "print": "طباعة",
+    "generatePdf": "توليد PDF",
+    "generatingPdf": "جاري توليد PDF...",
+    "pdfGenerated": "تم توليد الشهادة بنجاح",
+    "pdfError": "فشل في توليد الشهادة",
+    "verifyTitle": "التحقق من الشهادة",
+    "enterCode": "أدخل رمز الشهادة",
+    "verify": "تحقق",
+    "verifying": "جاري التحقق...",
+    "notFound": "الشهادة غير موجودة",
+    "certificateDetails": "تفاصيل الشهادة",
+    "issuedTo": "ممنوحة لـ",
+    "courseCompleted": "الكورس المكتمل",
+    "grade": "التقدير",
+    "verifyUrl": "رابط التحقق"
   },
   "footer": {
     "about": "من نحن",
