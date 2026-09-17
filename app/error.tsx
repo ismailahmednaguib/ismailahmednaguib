@@ -2,7 +2,6 @@
 "use client";
 import { useEffect } from "react";
 import Link from "next/link";
-import { getSiteSettings } from "@/lib/site-settings";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
