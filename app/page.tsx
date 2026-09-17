@@ -11,9 +11,27 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const s = await getSiteSettings().catch(() => null);
   const tracks = await getTracks().catch(() => []);
-  const courses: Course[] = (await db.courses()).slice(0, 4);
-  const books: Book[] = (await db.books()).slice(0, 4);
-  const news: NewsItem[] = (await db.news()).slice(0, 3);
+  
+  // جلب البيانات وتصفيتها وترتيبها
+  const allCourses: Course[] = await db.courses();
+  const allBooks: Book[] = await db.books();
+  const allNews: NewsItem[] = await db.news();
+  
+  const courses = allCourses
+    .filter((c) => c.published !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .slice(0, 4);
+  
+  const books = allBooks
+    .filter((b) => b.published !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .slice(0, 4);
+  
+  const news = allNews
+    .filter((n) => n.published !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .slice(0, 3);
+  
   const t = (k: string, fb: string) => (s && (s as Record<string, string>)[k]) || fb;
   return (
     <>

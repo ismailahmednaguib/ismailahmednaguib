@@ -9,6 +9,7 @@ import "./styles-05-cert.css";
 import Header from "./components-Header";
 import Footer from "./components-Footer";
 import ThemeScript from "./ThemeScript";
+import MaintenanceBanner from "./components/MaintenanceBanner";
 
 export const metadata: Metadata = {
   title: `${SITE.name} | ${SITE.tagline}`,
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeScript theme={theme} />
       </head>
       <body>
+        <MaintenanceBanner />
         <a href="#main-content" className="skip-link">تخطي إلى المحتوى الرئيسي</a>
         <div id="topbar">{full.announce} — <a href="/admission">{full.announceLink || "ساهم والتحق الآن"}</a></div>
         <Header s={s} />

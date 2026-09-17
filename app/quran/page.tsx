@@ -6,9 +6,19 @@ import { getSiteSettings } from "../../lib/site-settings";
 export const dynamic = "force-dynamic";
 
 export default async function Quran() {
-  const lessons = (await db.lessons()).filter((l) => l.courseSlug.includes("tajweed") || l.courseSlug.includes("quran"));
-  const courses = (await db.courses()).filter((c) => c.track === "quran");
+  const allCourses = await db.courses();
+  const allLessons = await db.lessons();
   const s = await getSiteSettings().catch(() => null);
+  
+  // تصفية المسار القرآني والمنشور فقط وترتيب حسب order
+  const courses = allCourses
+    .filter((c) => c.track === "quran" && c.published !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  
+  const lessons = allLessons
+    .filter((l) => l.courseSlug.includes("tajweed") || l.courseSlug.includes("quran"))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  
   const t = (k: string, fb: string) => (s && (s as Record<string, string>)[k]) || fb;
   return (
     <>

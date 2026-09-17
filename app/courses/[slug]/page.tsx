@@ -1,5 +1,6 @@
 // app/courses/[slug]/page.tsx : تفاصيل الدورة + الدروس — كل كلمة من اللوحة + تسجيل للطلاب
 import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { db } from "../../../lib/db";
 import { youtubeEmbed } from "../../../lib/youtube";
@@ -14,13 +15,20 @@ export default async function CourseDetail({ params }: { params: { slug: string 
   const courses = await db.courses();
   const c = courses.find((x) => x.slug === params.slug);
   if (!c) return notFound();
-  const lessons = (await db.lessons()).filter((l) => l.courseSlug === c.slug);
+  
+  // التحقق من النشر (الإدارة ترى كل شيء)
+  const u = await currentUser();
+  if (c.published === false && (!u || u.role !== "admin")) {
+    return notFound();
+  }
+  
+  const allLessons = (await db.lessons()).filter((l) => l.courseSlug === c.slug);
+  const lessons = allLessons.sort((a, b) => (a.order || 0) - (b.order || 0));
   const s = await getSiteSettings().catch(() => null);
   const t = (k: string, fb: string) => (s && (s as Record<string, string>)[k]) || fb;
   const emb = c.videoUrl ? youtubeEmbed(c.videoUrl) : null;
   
   // التحقق من تسجيل الطالب
-  const u = await currentUser();
   let enrollment = null;
   if (u && u.role !== "admin") {
     const enrollments = await getStudentEnrollments(u.email);

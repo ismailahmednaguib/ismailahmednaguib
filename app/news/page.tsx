@@ -10,10 +10,15 @@ export default async function News({ searchParams }: { searchParams?: { [key: st
   const all = await db.news();
   const s = await getSiteSettings().catch(() => null);
   const page = Math.max(1, Number(searchParams?.page) || 1);
-  const totalPages = Math.ceil(all.length / PER_PAGE) || 1;
+  
+  // تصفية المنشورة فقط وترتيب حسب order
+  const published = all.filter((n) => n.published !== false);
+  const sorted = published.sort((a, b) => (a.order || 0) - (b.order || 0));
+  
+  const totalPages = Math.ceil(sorted.length / PER_PAGE) || 1;
   const safePage = Math.min(page, totalPages);
   const start = (safePage - 1) * PER_PAGE;
-  const paged = all.slice(start, start + PER_PAGE);
+  const paged = sorted.slice(start, start + PER_PAGE);
   const t = (k: string, fb: string) => (s && (s as Record<string, string>)[k]) || fb;
   const makeUrl = (p: number) => p > 1 ? `/news?page=${p}` : "/news";
 

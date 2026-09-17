@@ -5,8 +5,13 @@ import { getSiteSettings } from "../../lib/site-settings";
 export const dynamic = "force-dynamic";
 
 export default async function Fatwa() {
-  const list = await db.fatwas();
+  const all = await db.fatwas();
   const s = await getSiteSettings().catch(() => null);
+  
+  // تصفية المنشورة فقط وترتيب حسب order
+  const published = all.filter((f) => f.published !== false);
+  const list = published.sort((a, b) => (a.order || 0) - (b.order || 0));
+  
   return (<><section className="page-head wrap"><h1>{s?.fatwaTitle || "الفتاوى والاستشارات"}</h1><p>{s?.fatwaDesc || ""}</p></section>
   <section className="wrap sec">{list.length ? list.map((f) => (
   <div className="panel" key={f.id}><b>س: {f.q}</b><p>{f.a}</p><span className="mut">— {f.scholar}</span></div>))

@@ -14,7 +14,12 @@ export default async function Courses({ searchParams }: { searchParams?: { [key:
   const tracks = await getTracks().catch(() => []);
   const t = typeof searchParams?.track === "string" ? searchParams.track : undefined;
   const page = Math.max(1, Number(searchParams?.page) || 1);
-  const list = t ? all.filter((c) => c.track === t) : all;
+  
+  // تصفية المنشورة فقط وترتيب حسب order
+  const published = all.filter((c) => c.published !== false);
+  const sorted = published.sort((a, b) => (a.order || 0) - (b.order || 0));
+  const list = t ? sorted.filter((c) => c.track === t) : sorted;
+  
   const totalPages = Math.ceil(list.length / PER_PAGE) || 1;
   const safePage = Math.min(page, totalPages);
   const start = (safePage - 1) * PER_PAGE;
