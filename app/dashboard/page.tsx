@@ -8,7 +8,7 @@ import type { DashboardRow } from "./ui";
 import { Sec } from "./ui";
 import { FormCourse, FormLesson } from "./forms-1";
 import { FormBook, FormScholar, FormNews, FormFatwa } from "./forms-2";
-import { FormCert, FormSecurity } from "./forms-3";
+import { FormCert, FormSecurity, FormEmailSettings } from "./forms-3";
 import { FormSite } from "./forms-settings";
 import { FormBackup } from "./forms-backup";
 import { CoursesTbl, LessonsTbl, BooksTbl, ScholarsTbl, NewsTbl, FatwasTbl, CertsTbl } from "./EditTables";
@@ -68,6 +68,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <a href="#backup"><button style={{ width: "100%" }}>النسخ الاحتياطي</button></a>
         <a href="#activity"><button style={{ width: "100%" }}>سجل النشاطات</button></a>
         <a href="#security"><button style={{ width: "100%" }}>الأمان</button></a>
+        <a href="#email-settings"><button style={{ width: "100%" }}>إعدادات البريد</button></a>
       </aside>
       <div>
         <section className="panel"><h2 style={{ margin: 0 }}>لوحة التحكم</h2>
@@ -113,6 +114,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <FormBackup />
         <ActivityLog />
         <FormSecurity searchParams={searchParams} />
+        <FormEmailSettings />
       </div>
     </div>
   );

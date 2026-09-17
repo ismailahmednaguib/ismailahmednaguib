@@ -26,6 +26,7 @@ export default async function Admission({ searchParams }: Props) {
   <form className="frm" method="POST" action="/api/admission">
   <label>{t("admissionName", "الاسم الكامل")}</label><input name="name" required minLength={3} maxLength={80} />
   <label>{t("admissionPhone", "الهاتف / واتساب")}</label><input name="phone" required minLength={6} maxLength={20} />
+  <label>{t("admissionEmail", "البريد الإلكتروني (اختياري)")}</label><input name="email" type="email" dir="ltr" />
   <label>{t("admissionTrack", "المسار")}</label><select name="track">{tracks.map((x) => (<option key={x.slug} value={x.slug}>{x.title}</option>))}</select>
   <label>{t("admissionCourse", "الدورة")}</label><select name="course">{courses.length ? courses.map((c) => (<option key={c.slug} value={c.title}>{c.title}</option>)) : (<option value="">{t("admissionNoCourses", "لا توجد دورات بعد")}</option>)}</select>
   <button className="btn gold" type="submit">{t("admissionSubmit", "إرسال الطلب")}</button></form></section></>);

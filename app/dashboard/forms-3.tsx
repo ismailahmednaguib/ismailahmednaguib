@@ -1,4 +1,6 @@
-// app/dashboard/forms-3.tsx : الشهادات برقم تسلسلي + الأمان (باسورد + إيميل مع رسائل)
+// app/dashboard/forms-3.tsx : الشهادات برقم تسلسلي + الأمان (باسورد + إيميل مع رسائل) + إعدادات البريد
+"use client";
+import { useState } from "react";
 import { Sec } from "./ui";
 
 export function FormCert({ lastCode }: { lastCode?: string }) {
@@ -11,6 +13,64 @@ export function FormCert({ lastCode }: { lastCode?: string }) {
         <button className="btn gold" type="submit">إصدار شهادة برقم تلقائي</button>
       </form>
       <p className="mut">الترقيم تسلسلي رسمي لا يتكرر (IAN-YYYY-XXXX) — يظهر بعد الإصدار مع زر عرض وطباعة.</p>
+    </Sec>
+  );
+}
+
+export function FormEmailSettings() {
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [testEmail, setTestEmail] = useState("");
+
+  const testSend = async () => {
+    if (!testEmail) return setMsg("أدخل بريداً للاختبار");
+    setBusy(true);
+    setMsg("جار الإرسال...");
+    try {
+      const res = await fetch("/api/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: testEmail }),
+      });
+      const j = await res.json();
+      setMsg(j.ok ? "✓ تم إرسال بريد الاختبار بنجاح" : "فشل: " + (j.error || "غير معروف"));
+    } catch {
+      setMsg("خطأ شبكة");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Sec id="email-settings" title="إعدادات البريد الإلكتروني — Resend / SendGrid">
+      <p className="mut">أضف مفاتيح API في متغيرات البيئة (.env) ثم اختبر الإرسال.</p>
+      <div className="grid" style={{ marginBottom: 16 }}>
+        <div>
+          <label>RESEND_API_KEY</label>
+          <input type="password" value={process.env.RESEND_API_KEY || ""} readOnly style={{ background: "#f5f5f5" }} />
+          <small className="mut">{process.env.RESEND_API_KEY ? "✓ مضبوط" : "غير مضبوط"}</small>
+        </div>
+        <div>
+          <label>SENDGRID_API_KEY</label>
+          <input type="password" value={process.env.SENDGRID_API_KEY || ""} readOnly style={{ background: "#f5f5f5" }} />
+          <small className="mut">{process.env.SENDGRID_API_KEY ? "✓ مضبوط" : "غير مضبوط"}</small>
+        </div>
+        <div>
+          <label>EMAIL_FROM</label>
+          <input value={process.env.EMAIL_FROM || ""} readOnly style={{ background: "#f5f5f5" }} />
+          <small className="mut">{process.env.EMAIL_FROM ? "✓ مضبوط" : "غير مضبوط"}</small>
+        </div>
+        <div>
+          <label>ADMIN_EMAIL</label>
+          <input value={process.env.ADMIN_EMAIL || ""} readOnly style={{ background: "#f5f5f5" }} />
+          <small className="mut">{process.env.ADMIN_EMAIL ? "✓ مضبوط" : "غير مضبوط"}</small>
+        </div>
+      </div>
+      <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+        <input type="email" placeholder="بريد للاختبار" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="btn sm ghost" style={{ flex: 1, minWidth: 250 }} />
+        <button className="btn gold" onClick={testSend} disabled={busy}>{busy ? "⏳ جاري الإرسال..." : "📧 إرسال بريد اختبار"}</button>
+      </div>
+      {msg && <p className="mut" style={{ marginTop: 8 }}>{msg}</p>}
     </Sec>
   );
 }
