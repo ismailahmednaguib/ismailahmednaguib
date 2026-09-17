@@ -11,7 +11,7 @@ import { FormBook, FormScholar, FormNews, FormFatwa } from "./forms-2";
 import { FormCert, FormSecurity, FormEmailSettings } from "./forms-3";
 import { FormSite } from "./forms-settings";
 import { FormBackup } from "./forms-backup";
-import { CoursesTbl, LessonsTbl, BooksTbl, ScholarsTbl, NewsTbl, FatwasTbl, CertsTbl } from "./EditTables";
+import { CoursesTbl, LessonsTbl, BooksTbl, ScholarsTbl, NewsTbl, FatwasTbl, CertsTbl, UsersTbl } from "./EditTables";
 import AdmissActions from "./AdmissActions";
 import ActivityLog from "./ActivityLog";
 import Analytics from "./Analytics";
@@ -65,6 +65,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <a href="#admiss"><button style={{ width: "100%" }}>التقديمات</button></a>
         <a href="#enrollments"><button style={{ width: "100%" }}>إدارة التسجيلات</button></a>
         <a href="#files"><button style={{ width: "100%" }}>الملفات</button></a>
+        <a href="#users"><button style={{ width: "100%" }}>المستخدمين</button></a>
         <a href="#backup"><button style={{ width: "100%" }}>النسخ الاحتياطي</button></a>
         <a href="#activity"><button style={{ width: "100%" }}>سجل النشاطات</button></a>
         <a href="#security"><button style={{ width: "100%" }}>الأمان</button></a>
@@ -92,6 +93,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { [ke
         <FormCert lastCode={lastCode} /><CertsTbl rows={certs} />
         <EnrollmentsTbl courses={await db.courses()} />
         <FilesTbl />
+        <UsersTbl rows={await db.users().then(u => u.map(x => ({ ...x, __t: "users" })))} />
         <Sec id="admiss" title="طلبات التقديم — قبول / رفض / حذف">
           {admissions.length ? (
             <div style={{ overflowX: "auto" }}><table className="tbl"><thead><tr>

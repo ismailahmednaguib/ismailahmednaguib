@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 
-export interface EditField { name: string; label: string; type?: "text" | "number" | "select" | "textarea" | "checkbox"; options?: string[]; readonly?: boolean; }
+export interface EditField { name: string; label: string; type?: "text" | "number" | "select" | "textarea" | "checkbox" | "password"; options?: string[]; readonly?: boolean; }
 
 export default function EditRow({ table, row, fields }: { table: string; row: Record<string, unknown>; fields: EditField[] }) {
   const [open, setOpen] = useState(false);
@@ -66,7 +66,7 @@ export default function EditRow({ table, row, fields }: { table: string; row: Re
               ) : f.type === "checkbox" ? (
                 <label><input type="checkbox" style={{ width: "auto" }} checked={vals[f.name] === "1"} onChange={(e) => setVals((v) => ({ ...v, [f.name]: e.target.checked ? "1" : "" }))} /> مفعّل</label>
               ) : (
-                <input type={f.type === "number" ? "number" : "text"} value={vals[f.name] || ""} readOnly={f.readonly} dir={f.name === "slug" || f.name === "code" || f.name === "videoUrl" || f.name === "pdfUrl" ? "ltr" : undefined} onChange={(e) => setVals((v) => ({ ...v, [f.name]: e.target.value }))} />
+                <input type={f.type === "number" ? "number" : f.type || "text"} value={vals[f.name] || ""} readOnly={f.readonly} dir={f.name === "slug" || f.name === "code" || f.name === "videoUrl" || f.name === "pdfUrl" ? "ltr" : undefined} onChange={(e) => setVals((v) => ({ ...v, [f.name]: e.target.value }))} />
               )}
             </div>
           ))}

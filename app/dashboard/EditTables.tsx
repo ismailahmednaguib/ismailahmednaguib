@@ -159,3 +159,12 @@ export function CertsTbl({ rows }: { rows: DashboardRow[] }) {
     { name: "date", label: "التاريخ" },
   ]} />;
 }
+
+export function UsersTbl({ rows }: { rows: DashboardRow[] }) {
+  const ROLES = ["admin", "teacher", "student"];
+  return <RowTbl rows={rows} cols={["email", "role"]} table="users" fields={[
+    { name: "email", label: "البريد الإلكتروني" },
+    { name: "role", label: "الدور", type: "select", options: ROLES },
+    { name: "password", label: "كلمة المرور الجديدة (10+ حروف)", type: "password" },
+  ]} />;
+}
