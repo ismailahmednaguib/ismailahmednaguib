@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   
   const staticPages = [
-    "", "/courses", "/library", "/quran", "/scholars", "/fatwa", "/news", "/verify", "/admission",
+    "", "/courses", "/library", "/quran", "/scholars", "/fatwa", "/news", "/verify", "/admission", "/search",
   ].map((p) => ({
     url: `${base}${p || "/"}`,
     lastModified: now,
@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: p === "" ? 1.0 : 0.8,
   }));
 
-  // Dynamic pages from database
+  // Dynamic pages from database - only published
   const [courses, books, scholars, news] = await Promise.all([
     db.courses().catch(() => []),
     db.books().catch(() => []),
@@ -23,30 +23,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const dynamicPages = [
-    ...courses.map((c: { slug: string }) => ({
-      url: `${base}/courses/${c.slug}`,
-      lastModified: now,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    })),
-    ...books.map((b: { slug: string }) => ({
-      url: `${base}/library/${b.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    ...scholars.map((s: { slug: string }) => ({
-      url: `${base}/scholars/${s.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    ...news.map((n: { slug: string }) => ({
-      url: `${base}/news/${n.slug}`,
-      lastModified: now,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    })),
+    ...courses
+      .filter((c: { slug: string; published?: boolean }) => c.published !== false)
+      .map((c: { slug: string }) => ({
+        url: `${base}/courses/${c.slug}`,
+        lastModified: now,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      })),
+    ...books
+      .filter((b: { slug: string; published?: boolean }) => b.published !== false)
+      .map((b: { slug: string }) => ({
+        url: `${base}/library/${b.slug}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    ...scholars
+      .filter((s: { slug: string; published?: boolean }) => s.published !== false)
+      .map((s: { slug: string }) => ({
+        url: `${base}/scholars/${s.slug}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    ...news
+      .filter((n: { slug: string; published?: boolean }) => n.published !== false)
+      .map((n: { slug: string }) => ({
+        url: `${base}/news/${n.slug}`,
+        lastModified: now,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      })),
   ];
 
   return [...staticPages, ...dynamicPages];
