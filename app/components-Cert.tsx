@@ -2,6 +2,7 @@
 "use client";
 import type { Certificate } from "../lib/types";
 import type { SiteSettings } from "../lib/site-settings";
+import QRCode from "@/app/components/QRCode";
 
 export function CertView({ cert, s, verifyUrl }: { cert: Certificate; s: SiteSettings; verifyUrl?: string }) {
   const url = verifyUrl || `/verify?code=${encodeURIComponent(cert.code)}`;
@@ -24,7 +25,7 @@ export function CertView({ cert, s, verifyUrl }: { cert: Certificate; s: SiteSet
         <div className="cert-foot">
           <div className="cert-sign"><b>{t("certSignName", "إدارة المنصة")}</b><small>{t("certSignTitle", "التوقيع والختم")}</small><div className="seal">◈</div></div>
           <div className="cert-verify">
-            <div className="qrcode" dir="ltr">{cert.code}</div>
+            <QRCode data={url} size={100} />
             <small>{t("certFooter", "")}</small>
             <a className="mut" href={url} style={{ fontSize: 12 }}>{t("certVerifyLink", "رابط التحقق")}: {url}</a>
           </div>
