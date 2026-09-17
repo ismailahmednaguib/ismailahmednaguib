@@ -1,0 +1,45 @@
+{
+  "name": "منصة التعليم الشرعي",
+  "short_name": "تعليم",
+  "description": "منصة تعليمية: أكاديمية شرعية + معهد تدريبي + مدرسة قرآنية + أقسام جامعية مصغرة",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2d5a27",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books"],
+  "lang": "ar",
+  "dir": "rtl",
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "الكورسات",
+      "short_name": "الكورسات",
+      "description": "تصفح الكورسات المتاحة",
+      "url": "/ar/courses",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "بوابة الطالب",
+      "short_name": "طالب",
+      "description": "الدخول لبوابة الطالب",
+      "url": "/ar/student",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "التقديم",
+      "short_name": "التقديم",
+      "description": "تقديم طلب الالتحاق",
+      "url": "/ar/admission",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    }
+  ]
+}

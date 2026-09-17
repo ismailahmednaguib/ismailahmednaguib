@@ -4,7 +4,7 @@ import { getTracks } from "@/lib/track-settings";
 import { getSiteSettings } from "@/lib/site-settings";
 import { db } from "@/lib/db";
 import type { Course, Book, NewsItem } from "@/lib/types";
-import { CourseCard, BookCard } from "../../components-Cards";
+import { CourseCard, BookCard } from "@/app/components-Cards";
 import { useTranslations } from "next-intl";
 
 export const dynamic = "force-dynamic";

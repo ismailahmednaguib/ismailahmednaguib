@@ -1,7 +1,7 @@
 // app/[locale]/live/page.tsx : صفحة الجلسات المباشرة
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import LiveSessionsPage from "../../../components/LiveSessionsPage";
+import LiveSessionsPage from "@/app/components/LiveSessionsPage";
 
 export const dynamic = "force-dynamic";
 

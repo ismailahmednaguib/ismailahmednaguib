@@ -435,5 +435,14 @@
     "joinError": "Failed to join session",
     "updateError": "Failed to update session",
     "networkError": "Network error"
+  },
+  "pwa": {
+    "installTitle": "Install App",
+    "installDescription": "Add the platform to your home screen for quick access and offline support",
+    "install": "Install",
+    "notNow": "Not Now",
+    "offlineTitle": "You're Offline",
+    "offlineDescription": "Some features may not work without internet connection",
+    "retry": "Retry"
   }
 }

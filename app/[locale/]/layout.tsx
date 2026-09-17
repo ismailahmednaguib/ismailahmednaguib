@@ -7,11 +7,12 @@ import "../../styles-02-layout.css";
 import "../../styles-03-components.css";
 import "../../styles-04-dashboard.css";
 import "../../styles-05-cert.css";
-import Header from "../../components-Header";
-import Footer from "../../components-Footer";
-import ThemeScript from "../../ThemeScript";
-import MaintenanceBanner from "../../components/MaintenanceBanner";
-import IntlProvider from "../../../components/IntlProvider";
+import Header from "@/app/components-Header";
+import Footer from "@/app/components-Footer";
+import ThemeScript from "@/app/ThemeScript";
+import MaintenanceBanner from "@/app/components/MaintenanceBanner";
+import IntlProvider from "@/components/IntlProvider";
+import PWAInstall from "@/app/components/PWAInstall";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -51,6 +52,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           <Header s={s} locale={locale} />
           <main id="main-content" className="wrap" style={{ minHeight: "60vh" }}>{children}</main>
           <Footer s={s} locale={locale} />
+          <PWAInstall />
         </body>
       </html>
     </IntlProvider>
