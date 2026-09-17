@@ -25,11 +25,19 @@ function t(settings: Record<string, string> | null, k: string, fb: string) {
 export default function StudentDashboard({ user, myCourses, settings }: Props) {
   const [activeCourse, setActiveCourse] = useState<MyCourse | null>(null);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
+  const [view, setView] = useState<"overview" | "certificates">("overview");
 
   const totalProgress = myCourses.length
     ? Math.round(myCourses.reduce((sum, m) => sum + m.enrollment.progress, 0) / myCourses.length)
     : 0;
   const completedCourses = myCourses.filter(m => m.enrollment.progress === 100).length;
+  
+  // الشهادات المصدرة
+  const myCertificates = myCourses.filter(m => m.enrollment.certificateIssued).map(m => ({
+    code: m.enrollment.certificateCode,
+    course: m.course.title,
+    date: m.enrollment.lastAccessedAt || new Date().toISOString().slice(0, 10),
+  }));
 
   return (
     <div className="student-wrap">
@@ -42,12 +50,15 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
           </div>
         </div>
         <nav className="student-nav">
-          <button className={!activeCourse ? "active" : ""} onClick={() => { setActiveCourse(null); setActiveLesson(null); }}>
+          <button className={!activeCourse && view === "overview" ? "active" : ""} onClick={() => { setActiveCourse(null); setActiveLesson(null); setView("overview"); }}>
             📊 نظرة عامة
+          </button>
+          <button className={!activeCourse && view === "certificates" ? "active" : ""} onClick={() => { setActiveCourse(null); setActiveLesson(null); setView("certificates"); }}>
+            📜 شهاداتي ({myCertificates.length})
           </button>
           {myCourses.map(m => (
             <button key={m.enrollment.id} className={activeCourse?.enrollment.id === m.enrollment.id ? "active" : ""}
-              onClick={() => { setActiveCourse(m); setActiveLesson(null); }}>
+              onClick={() => { setActiveCourse(m); setActiveLesson(null); setView("overview"); }}>
               🎓 {m.course.title}
               <span className="progress-badge">{m.enrollment.progress}%</span>
             </button>
@@ -64,48 +75,72 @@ export default function StudentDashboard({ user, myCourses, settings }: Props) {
 
       <div className="student-main">
         {!activeCourse ? (
-          <section className="panel">
-            <h2 style={{ marginTop: 0 }}>مرحباً بك، {user.email.split("@")[0]} 👋</h2>
-            <p className="mut">من هنا تتابع تقدمك في الدورات، تشاهد الدروس، وتصدر شهاداتك عند الإكمال.</p>
+          view === "overview" ? (
+            <section className="panel">
+              <h2 style={{ marginTop: 0 }}>مرحباً بك، {user.email.split("@")[0]} 👋</h2>
+              <p className="mut">من هنا تتابع تقدمك في الدورات، تشاهد الدروس، وتصدر شهاداتك عند الإكمال.</p>
 
-            <div className="kpis" style={{ marginTop: 16 }}>
-              <div className="kpi"><b>{myCourses.length}</b><span>دورات مسجلة</span></div>
-              <div className="kpi"><b>{completedCourses}</b><span>دورات مكتملة</span></div>
-              <div className="kpi"><b>{totalProgress}%</b><span>التقدم الكلي</span></div>
-            </div>
+              <div className="kpis" style={{ marginTop: 16 }}>
+                <div className="kpi"><b>{myCourses.length}</b><span>دورات مسجلة</span></div>
+                <div className="kpi"><b>{completedCourses}</b><span>دورات مكتملة</span></div>
+                <div className="kpi"><b>{totalProgress}%</b><span>التقدم الكلي</span></div>
+              </div>
 
-            {myCourses.length ? (
-              <div className="grid" style={{ marginTop: 20 }}>
-                {myCourses.map(m => (
-                  <div className="card" key={m.enrollment.id} onClick={() => setActiveCourse(m)} style={{ cursor: "pointer" }}>
-                    <div className="thumb">{m.course.videoUrl ? <img src={youtubeThumb(m.course.videoUrl!) || ""} alt={m.course.title} loading="lazy" /> : "🎓"}</div>
-                    <div className="pad">
-                      <span className="badge">{m.course.track} • {m.course.level}</span>
-                      <b>{m.course.title}</b>
-                      <span className="mut">{m.course.teacher} • {m.course.hours} ساعة</span>
-                      <div style={{ marginTop: 8 }}>
-                        <div style={{ height: 6, background: "var(--br)", borderRadius: 3, overflow: "hidden" }}>
-                          <div style={{ width: `${m.enrollment.progress}%`, height: "100%", background: "linear-gradient(90deg,var(--g),var(--g2))", transition: "width .3s" }}></div>
+              {myCourses.length ? (
+                <div className="grid" style={{ marginTop: 20 }}>
+                  {myCourses.map(m => (
+                    <div className="card" key={m.enrollment.id} onClick={() => setActiveCourse(m)} style={{ cursor: "pointer" }}>
+                      <div className="thumb">{m.course.videoUrl ? <img src={youtubeThumb(m.course.videoUrl!) || ""} alt={m.course.title} loading="lazy" /> : "🎓"}</div>
+                      <div className="pad">
+                        <span className="badge">{m.course.track} • {m.course.level}</span>
+                        <b>{m.course.title}</b>
+                        <span className="mut">{m.course.teacher} • {m.course.hours} ساعة</span>
+                        <div style={{ marginTop: 8 }}>
+                          <div style={{ height: 6, background: "var(--br)", borderRadius: 3, overflow: "hidden" }}>
+                            <div style={{ width: `${m.enrollment.progress}%`, height: "100%", background: "linear-gradient(90deg,var(--g),var(--g2))", transition: "width .3s" }}></div>
+                          </div>
+                          <small className="mut">{m.enrollment.progress}% مكتمل • {m.enrollment.completedLessons.length} درس منتهٍ</small>
                         </div>
-                        <small className="mut">{m.enrollment.progress}% مكتمل • {m.enrollment.completedLessons.length} درس منتهٍ</small>
+                        {m.enrollment.certificateIssued && (
+                          <Link className="btn sm gold" style={{ marginTop: 8, display: "inline-block" }}
+                            href={`/verify?code=${m.enrollment.certificateCode}`} target="_blank" rel="noreferrer">
+                            📜 عرض الشهادة
+                          </Link>
+                        )}
                       </div>
-                      {m.enrollment.certificateIssued && (
-                        <Link className="btn sm gold" style={{ marginTop: 8, display: "inline-block" }}
-                          href={`/verify?code=${m.enrollment.certificateCode}`} target="_blank" rel="noreferrer">
-                          📜 عرض الشهادة
-                        </Link>
-                      )}
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="panel" style={{ marginTop: 20, textAlign: "center" }}>
-                <p className="mut">لم تسجل في أي دورة بعد.</p>
-                <Link className="btn gold" href="/courses" style={{ marginTop: 12, display: "inline-block" }}>تصفح الدورات</Link>
-              </div>
-            )}
-          </section>
+                  ))}
+                </div>
+              ) : (
+                <div className="panel" style={{ marginTop: 20, textAlign: "center" }}>
+                  <p className="mut">لم تسجل في أي دورة بعد.</p>
+                  <Link className="btn gold" href="/courses" style={{ marginTop: 12, display: "inline-block" }}>تصفح الدورات</Link>
+                </div>
+              )}
+            </section>
+          ) : (
+            <section className="panel">
+              <h2 style={{ marginTop: 0 }}>📜 شهاداتي المصدرة ({myCertificates.length})</h2>
+              {myCertificates.length ? (
+                <div className="grid" style={{ marginTop: 16 }}>
+                  {myCertificates.map((cert, i) => (
+                    <div key={i} className="card" style={{ textAlign: "center" }}>
+                      <div className="pad">
+                        <div className="qrcode" style={{ fontSize: 18, marginBottom: 8 }} dir="ltr">{cert.code || "—"}</div>
+                        <b>{cert.course}</b>
+                        <p className="mut" style={{ margin: "8px 0" }}>تاريخ الإصدار: {cert.date}</p>
+                        <Link className="btn sm gold" href={`/verify?code=${encodeURIComponent(cert.code || "")}`} target="_blank" rel="noreferrer">
+                          عرض وطباعة
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mut" style={{ textAlign: "center", marginTop: 20 }}>لم تحصل على أي شهادة بعد. أكمل الدورات بنسبة 100% لتحصل على شهادتك.</p>
+              )}
+            </section>
+          )
         ) : (
           <section className="panel">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>

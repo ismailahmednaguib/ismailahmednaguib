@@ -11,11 +11,15 @@ interface Props {
 }
 
 export default async function Admission({ searchParams }: Props) {
-  const courses: Course[] = await db.courses();
+  const allCourses: Course[] = await db.courses();
   const s = await getSiteSettings().catch(() => null);
   const tracks = await getTracks().catch(() => []);
   const ok = searchParams?.ok === "1";
   const t = (k: string, fb: string) => (s && (s as Record<string, string>)[k]) || fb;
+  
+  // فقط الدورات المنشورة
+  const courses = allCourses.filter((c) => c.published !== false);
+  
   return (<><section className="page-head wrap"><h1>{t("admissionTitle", "التقديم والالتحاق")}</h1><p>{t("admissionDesc", "")}</p></section>
   <section className="wrap sec">
   {ok && (<div className="panel" style={{ borderColor: "var(--g2)" }}><b>✓ {t("admissionOkTitle", "تم استلام طلبك بنجاح")}</b><p className="mut">{t("admissionOkDesc", "")}</p></div>)}

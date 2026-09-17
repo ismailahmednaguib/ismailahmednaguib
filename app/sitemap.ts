@@ -15,11 +15,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Dynamic pages from database - only published
-  const [courses, books, scholars, news] = await Promise.all([
+  const [courses, books, scholars, news, fatwas] = await Promise.all([
     db.courses().catch(() => []),
     db.books().catch(() => []),
     db.scholars().catch(() => []),
     db.news().catch(() => []),
+    db.fatwas().catch(() => []),
   ]);
 
   const dynamicPages = [
@@ -54,6 +55,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: now,
         changeFrequency: "weekly" as const,
         priority: 0.7,
+      })),
+    ...fatwas
+      .filter((f: { id: string; published?: boolean }) => f.published !== false)
+      .map((f: { id: string }) => ({
+        url: `${base}/fatwa/${f.id}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
       })),
   ];
 
