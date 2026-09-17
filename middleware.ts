@@ -1,7 +1,9 @@
-// middleware.ts : حماية لوحة التحكم + هيدرات أمان + تحديد معدل الطلبات — ملف مستقل
+// middleware.ts : حماية لوحة التحكم + هيدرات أمان + تحديد معدل الطلبات + i18n
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import createIntlMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || "dev-only-change-me-please-64-chars-long-secret-key-1234567890");
 
@@ -28,7 +30,14 @@ function getClientIp(req: NextRequest): string {
     || "unknown";
 }
 
+// i18n middleware
+const intlMiddleware = createIntlMiddleware(routing);
+
 export async function middleware(req: NextRequest) {
+  // تطبيق i18n middleware أولاً
+  const intlResponse = intlMiddleware(req);
+  if (intlResponse) return intlResponse;
+  
   const ip = getClientIp(req);
   const res = NextResponse.next();
   

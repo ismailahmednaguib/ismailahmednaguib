@@ -1,8 +1,10 @@
 // app/ThemeToggle.tsx : زر تبديل الثيم
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ThemeToggle({ className = "" }: { className?: string }) {
+  const t = useTranslations("theme");
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
@@ -31,9 +33,9 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   if (!mounted) return <button className={`theme-toggle ${className}`} disabled>⏳</button>;
 
   return (
-    <button className={`theme-toggle ${className}`} onClick={toggle} aria-label="تبديل الثيم" title={theme === "light" ? "الوضع الداكن" : "الوضع الفاتح"}>
+    <button className={`theme-toggle ${className}`} onClick={toggle} aria-label={t("toggle")} title={theme === "light" ? t("dark") : t("light")}>
       {theme === "light" ? "🌙" : "☀️"}
-      <span>{theme === "light" ? "داكن" : "فاتح"}</span>
+      <span>{theme === "light" ? t("dark") : t("light")}</span>
     </button>
   );
 }

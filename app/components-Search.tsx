@@ -2,9 +2,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function SearchBox({ 
-  placeholder = "ابحث في الدورات والكتب والأخبار...",
+  placeholder,
   className = "",
   showResults = true
 }: { 
@@ -12,6 +13,8 @@ export default function SearchBox({
   className?: string;
   showResults?: boolean;
 }) {
+  const t = useTranslations("nav");
+  const common = useTranslations("common");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Array<{
     type: string; title: string; desc: string; url: string; track?: string;
@@ -52,7 +55,7 @@ export default function SearchBox({
   }, [query]);
 
   const typeLabels: Record<string, string> = {
-    course: "دورة", book: "كتاب", news: "خبر", scholar: "عالم", fatwa: "فتوى"
+    course: "course", book: "book", news: "news", scholar: "scholar", fatwa: "fatwa"
   };
   const typeIcons: Record<string, string> = {
     course: "🎓", book: "📚", news: "📰", scholar: "👳", fatwa: "⚖️"
@@ -64,13 +67,13 @@ export default function SearchBox({
         <input
           ref={inputRef}
           type="search"
-          placeholder={placeholder}
+          placeholder={placeholder || common("search")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setShow(true)}
           className="search-input"
           autoComplete="off"
-          aria-label="البحث"
+          aria-label={common("search")}
           aria-expanded={show && results.length > 0}
           aria-controls="search-results"
         />
@@ -83,7 +86,7 @@ export default function SearchBox({
           id="search-results"
           className="search-results"
           role="listbox"
-          aria-label="نتائج البحث"
+          aria-label={common("search")}
         >
           {results.length > 0 ? (
             <ul role="list">
@@ -94,7 +97,7 @@ export default function SearchBox({
                     <div className="result-content">
                       <span className="result-title">{r.title}</span>
                       <span className="result-meta">
-                        <span className="result-type">{typeLabels[r.type] || r.type}</span>
+                        <span className="result-type">{t(typeLabels[r.type] || r.type)}</span>
                         {r.track && <span className="result-track">{r.track}</span>}
                         <span className="result-desc">{r.desc}</span>
                       </span>
@@ -104,7 +107,7 @@ export default function SearchBox({
               ))}
             </ul>
           ) : (
-            <div className="search-empty">لا توجد نتائج لـ "{query}"</div>
+            <div className="search-empty">{common("noResults")} "{query}"</div>
           )}
         </div>
       )}
