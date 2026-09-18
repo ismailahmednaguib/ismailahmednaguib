@@ -59,7 +59,9 @@ export async function middleware(req: NextRequest) {
   }
   
   const ip = getClientIp(req);
-  const res = NextResponse.next();
+  // Keep the response returned by next-intl. It contains the locale rewrite
+  // and request headers needed by the localized route tree.
+  const res = intlResponse || NextResponse.next();
   
   // تخطي فحص تسجيل الدخول لمسار API الدخول
   if (req.nextUrl.pathname === "/api/login" && req.method === "POST") {

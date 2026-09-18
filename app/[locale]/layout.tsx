@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
 import { getSiteSettings } from "@/lib/site-settings";
-import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import "../styles-01-base.css";
 import "../styles-02-layout.css";
@@ -52,7 +51,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   let messages: { common?: { loading?: string }; [key: string]: unknown } = FALLBACK_MESSAGES;
   try {
-    messages = await getMessages({ locale: validLocale });
+    messages = (await import(`@/messages/${validLocale}.json`)).default;
   } catch {
     try {
       messages = (await import(`@/messages/${routing.defaultLocale}.json`)).default;
