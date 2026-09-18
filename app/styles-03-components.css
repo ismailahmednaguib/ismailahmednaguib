@@ -19,6 +19,9 @@
 input,select,textarea{font-family:inherit;padding:10px;border-radius:10px;border:1px solid var(--theme-br);background:var(--theme-input-bg);color:var(--theme-tx);width:100%;transition:border-color .2s,box-shadow .2s}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px #c9a22733}
 form.frm{display:grid;gap:9px;max-width:560px}
+.login-card{max-width:560px;margin:0 auto;padding:22px;background:var(--theme-card);border:1px solid var(--theme-br);border-radius:16px;box-shadow:0 12px 30px #00000012}
+.login-card .frm{max-width:none}
+.login-card .btn.gold{width:100%;margin-top:6px}
 label{font-weight:800;font-size:13px}
 table.tbl{width:100%;border-collapse:collapse;background:var(--theme-card);font-size:13.5px}
 table.tbl th,table.tbl td{padding:9px;border-bottom:1px solid var(--theme-br);text-align:start}

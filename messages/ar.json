@@ -213,6 +213,10 @@
   "notifications": {
     "title": "الإشعارات",
     "markAllRead": "تحديد الكل كمقروء",
+    "markRead": "تحديد كمقروء",
+    "view": "عرض",
+    "delete": "حذف",
+    "unread": "غير مقروء",
     "noNotifications": "لا توجد إشعارات",
     "newLesson": "درس جديد متاح",
     "newCertificate": "شهادة جديدة متاحة",

@@ -19,19 +19,20 @@ export async function POST(req: Request) {
     : await req.json().catch(() => ({}));
   const email = cleanText(String(body["email"] || "").toLowerCase(), 120);
   const password = String(body["password"] || "");
+  const locale = String(body["locale"] || "") === "en" ? "en" : "ar";
 
   const users = await db.users();
   const admin = users.find((u) => u.email === email);
   if (!admin || !(await checkPassword(password, admin.hash))) {
     loginFailed(ip);
-    if (isForm) return NextResponse.redirect(new URL("/login?err=1", req.url));
+    if (isForm) return NextResponse.redirect(new URL(`/${locale}/login?err=1`, req.url));
     return NextResponse.json({ error: "بيانات الدخول غير صحيحة" }, { status: 401 });
   }
   loginOk(ip);
   await logLogin(admin.email, admin.role, ip);
   const token = await makeToken({ email: admin.email, role: admin.role });
   if (isForm) {
-    const res = NextResponse.redirect(new URL("/dashboard", req.url));
+    const res = NextResponse.redirect(new URL(`/${locale}/dashboard`, req.url));
     res.cookies.set(SESSION_COOKIE, token, cookieOpts(req));
     return res;
   }
