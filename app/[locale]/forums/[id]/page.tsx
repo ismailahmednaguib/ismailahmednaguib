@@ -9,6 +9,5 @@ export default async function ForumPageRoute({ params }: { params: Promise<{ loc
   const { locale, id } = await params;
   const user = await currentUser();
   if (!user) redirect(`/${locale}/login`);
-  
   return <ForumPage locale={locale} forumId={id} userEmail={user.email} userRole={user.role} />;
 }
