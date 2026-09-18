@@ -13,6 +13,7 @@ import ThemeScript from "@/app/ThemeScript";
 import MaintenanceBanner from "@/app/components/MaintenanceBanner";
 import IntlProvider from "@/components/IntlProvider";
 import PWAInstall from "@/app/components/PWAInstall";
+import LocaleDocument from "@/app/LocaleDocument";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -68,23 +69,41 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     // Keep the safe default settings.
   }
 
+  const messageText = (key: string, fallback: string) => {
+    const value = key.split(".").reduce<unknown>((current, part) => (
+      current && typeof current === "object" ? (current as Record<string, unknown>)[part] : undefined
+    ), messages);
+    return typeof value === "string" && value ? value : fallback;
+  };
+
+  const displaySettings = validLocale === "ar" ? full : {
+    ...full,
+    siteName: messageText("siteName", "Ismail Ahmed Naguib"),
+    tagline: messageText("siteTagline", "Sharia Academy • Training Institute • Quran School • University Departments"),
+    announce: messageText("announce", "Admissions open 2026"),
+    announceLink: messageText("announceLink", "Apply and join now"),
+    footerAbout: messageText("footerAbout", "Online learning, certified programs, and verifiable certificates."),
+    footerRights: messageText("footerRights", "All rights reserved"),
+  };
+
   const theme = full.themeMode || "light";
   const dir = validLocale === "ar" ? "rtl" : "ltr";
 
   return (
     <IntlProvider locale={validLocale} messages={messages}>
       <div lang={validLocale} dir={dir} data-theme={theme} className="locale-shell">
+        <LocaleDocument locale={validLocale} dir={dir} />
         <ThemeScript theme={theme} />
         <MaintenanceBanner />
         <a href="#main-content" className="skip-link">
           {(messages.common?.loading as string) || "جاري التحميل..."}
         </a>
         <div id="topbar">
-          {full.announce} — <a href={`/${validLocale}/admission`}>{full.announceLink || "ساهم والتحق الآن"}</a>
+          {displaySettings.announce} — <a href={`/${validLocale}/admission`}>{displaySettings.announceLink || "ساهم والتحق الآن"}</a>
         </div>
-        <Header s={full} locale={validLocale} />
+        <Header s={displaySettings} locale={validLocale} />
         <main id="main-content" className="wrap" style={{ minHeight: "60vh" }}>{children}</main>
-        <Footer s={full} locale={validLocale} />
+        <Footer s={displaySettings} locale={validLocale} />
         <PWAInstall />
       </div>
     </IntlProvider>

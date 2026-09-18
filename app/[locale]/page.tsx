@@ -27,14 +27,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const books = allBooks.filter((item) => item.published !== false).sort((a, b) => (a.order || 0) - (b.order || 0)).slice(0, 4);
   const news = allNews.filter((item) => item.published !== false).sort((a, b) => (a.order || 0) - (b.order || 0)).slice(0, 3);
   const settingText = (key: string, fallback: string) => (settings && (settings as Record<string, string>)[key]) || fallback;
+  const homeText = (key: string, fallback: string) => locale === "ar" ? settingText(key, t(key, fallback)) : t(key, fallback);
 
   return (
     <>
       <section className="hero wrap">
         <div>
-          <span className="kicker">{settingText("heroKicker", t("heroKicker", "التقديم مفتوح"))}</span>
-          <h1>{settingText("heroTitle", t("heroTitle", "منصتنا التعليمية"))}</h1>
-          <p>{settingText("heroDesc", t("heroDesc", "دورات، إجازات، تحفيظ، مهارات، وشهادات موثقة قابلة للتحقق."))}</p>
+          <span className="kicker">{homeText("heroKicker", "التقديم مفتوح")}</span>
+          <h1>{homeText("heroTitle", "منصتنا التعليمية")}</h1>
+          <p>{homeText("heroDesc", "دورات، إجازات، تحفيظ، مهارات، وشهادات موثقة قابلة للتحقق.")}</p>
           <div className="row" style={{ marginTop: 14 }}>
             <Link className="btn gold" href={`/${locale}/admission`}>{t("heroBtn1", "قدّم الآن")}</Link>
             <Link className="btn ghost" style={{ borderColor: "#fff", color: "#fff" }} href={`/${locale}/courses`}>{t("heroBtn2", "تصفح الدورات")}</Link>

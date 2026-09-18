@@ -6,6 +6,7 @@ import NavBurger from "./NavBurger";
 import SearchBox from "./components-Search";
 import UserNav from "./UserNav";
 import ThemeToggle from "./ThemeToggle";
+import LanguageToggle from "./LanguageToggle";
 import NotificationBell from "./components/NotificationBell";
 import type { SiteSettings } from "../lib/site-settings";
 
@@ -36,6 +37,7 @@ export default function Header({ s, locale }: { s: SiteSettings; locale: string 
         <div className="hact">
           <SearchBox placeholder={t("search")} className="header-search" />
           <NotificationBell locale={locale} />
+          <LanguageToggle locale={locale} />
           <ThemeToggle />
           <UserNav s={s} locale={locale} />
         </div>

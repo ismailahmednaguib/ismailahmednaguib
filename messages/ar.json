@@ -14,7 +14,8 @@
     "logout": "خروج",
     "dashboard": "لوحة التحكم",
     "student": "بوابة الطالب",
-    "profile": "الملف الشخصي"
+    "profile": "الملف الشخصي",
+    "verify": "تحقق من شهادة"
   },
   "common": {
     "loading": "جاري التحميل...",
@@ -112,7 +113,8 @@
     "curriculum": "المنهج",
     "requirements": "المتطلبات",
     "whatYouWillLearn": "ماذا ستتعلم",
-    "targetAudience": "الجمهور المستهدف"
+    "targetAudience": "الجمهور المستهدف",
+    "viewDetails": "عرض التفاصيل"
   },
   "fatwa": {
     "title": "الفتاوى",
